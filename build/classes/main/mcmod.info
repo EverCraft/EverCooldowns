@@ -1,0 +1,19 @@
+[
+    {
+        "modid": "fr.evercraft.evermails",
+        "name": "EverMails",
+        "version": "1.2",
+        "description": "Sending mail",
+        "url": "http://evercraft.fr/",
+        "authorList": [
+            "rexbut"
+        ],
+        "requiredMods": [
+            "fr.evercraft.everapi@1.2"
+        ],
+        "dependencies": [
+            "fr.evercraft.everchat",
+            "fr.evercraft.everapi@1.2"
+        ]
+    }
+]
