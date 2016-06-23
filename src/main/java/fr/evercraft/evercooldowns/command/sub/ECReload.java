@@ -1,20 +1,4 @@
-/*
- * This file is part of EverMails.
- *
- * EverMails is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * EverMails is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with EverMails.  If not, see <http://www.gnu.org/licenses/>.
- */
-package fr.evercraft.evermails.command.sub;
+package fr.evercraft.evercooldowns.command.sub;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,11 +13,11 @@ import fr.evercraft.everapi.EAMessage.EAMessages;
 import fr.evercraft.everapi.EAPermissions;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
-import fr.evercraft.evermails.EMCommand;
-import fr.evercraft.evermails.EverMails;
+import fr.evercraft.evercooldowns.ECCommand;
+import fr.evercraft.evercooldowns.EverCooldowns;
 
-public class EMReload extends ESubCommand<EverMails> {
-	public EMReload(final EverMails plugin, final EMCommand command) {
+public class ECReload extends ESubCommand<EverCooldowns> {
+	public ECReload(final EverCooldowns plugin, final ECCommand command) {
         super(plugin, command, "reload");
     }
 	
