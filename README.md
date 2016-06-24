@@ -1,5 +1,5 @@
 EverCooldowns
-=============
+============= 
 
 A minecraft plugin for Sponge platforms.
 
