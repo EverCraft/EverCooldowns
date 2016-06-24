@@ -26,7 +26,10 @@ public enum ECPermissions implements EnumPermission {
 	EVERCOOLDOWNS("command"),
 	
 	HELP("help"),
-	RELOAD("reload");
+	RELOAD("reload"),
+	
+	COOLDOWN("cooldown"),
+	BYPASS("bypass");
 
 	private final static String prefix = "evercooldowns";
 	

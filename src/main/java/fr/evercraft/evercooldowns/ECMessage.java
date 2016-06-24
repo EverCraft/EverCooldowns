@@ -36,7 +36,8 @@ public class ECMessage extends EMessage {
 	
 	public enum ECMessages implements EnumMessage {
 		PREFIX("prefix", "[&4Ever&6&lCooldowns&f] "),
-		DESCRIPTION("description", "Gestion des cooldowns");
+		DESCRIPTION("description", "Gestion des cooldowns"),
+		COOLDOWN("cooldown", "&cVous ne pouvez pas effectuer cette action avant : <times>");
 		
 		private final String path;
 	    private final Object french;

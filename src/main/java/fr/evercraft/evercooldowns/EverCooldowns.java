@@ -19,46 +19,54 @@ package fr.evercraft.evercooldowns;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 
+import fr.evercraft.everapi.exception.PluginDisableException;
 import fr.evercraft.everapi.plugin.EPlugin;
+import fr.evercraft.everapi.services.cooldown.CooldownsService;
 import fr.evercraft.evercooldowns.command.sub.ECReload;
+import fr.evercraft.evercooldowns.service.ECooldownsService;
 
-@Plugin(id = "fr.evercraft.evermails", 
-		name = "EverMails", 
+@Plugin(id = "fr.evercraft.evercooldowns", 
+		name = "EverCooldowns", 
 		version = "1.2", 
-		description = "Sending mail",
+		description = "Cooldowns",
 		url = "http://evercraft.fr/",
 		authors = {"rexbut"},
 		dependencies = {
-		    @Dependency(id = "fr.evercraft.everapi", version = "1.2"),
-		    @Dependency(id = "fr.evercraft.everchat", optional = true)
+		    @Dependency(id = "fr.evercraft.everapi", version = "1.2")
 		})
 public class EverCooldowns extends EPlugin {
 	private ECConfig configs;
 	private ECMessage messages;
+	private ECDataBase databases;
 	
-	//private ECooldownsService service;
+	private ECooldownsService service;
 	
 	@Override
-	protected void onPreEnable() {
+	protected void onPreEnable() throws PluginDisableException {
 		this.configs = new ECConfig(this);
-		
 		this.messages = new ECMessage(this);
+		this.databases = new ECDataBase(this);
 		
-		//this.service = new ECooldownsService(this);
-		//this.getGame().getServiceManager().setProvider(this, MailService.class, this.service);
+		this.service = new ECooldownsService(this);
+		this.getGame().getServiceManager().setProvider(this, CooldownsService.class, this.service);
 	}
 
 	
 	@Override
 	protected void onCompleteEnable() {
+		this.getGame().getEventManager().registerListeners(this, new ECListener(this));
+		
 		ECCommand command = new ECCommand(this);
 		
 		command.add(new ECReload(this, command));
 	}
 
-	protected void onReload(){
+	protected void onReload() throws PluginDisableException{
 		this.reloadConfigurations();
-		//this.service.reload();
+		
+		this.databases.reload();
+		
+		this.service.reload();
 	}
 	
 	protected void onDisable() {
@@ -75,8 +83,12 @@ public class EverCooldowns extends EPlugin {
 	public ECConfig getConfigs() {
 		return this.configs;
 	}
+
+	public ECDataBase getDataBases() {
+		return this.databases;
+	}
 	
-	/*public EMailService getService() {
+	public ECooldownsService getService() {
 		return this.service;
-	}*/
+	}
 }
