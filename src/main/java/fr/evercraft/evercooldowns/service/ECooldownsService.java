@@ -17,11 +17,8 @@
 package fr.evercraft.evercooldowns.service;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -30,15 +27,12 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-import ninja.leaping.configurate.ConfigurationNode;
-
 import com.google.common.base.Preconditions;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
 import fr.evercraft.everapi.java.Chronometer;
-import fr.evercraft.everapi.java.UtilsMap;
 import fr.evercraft.everapi.services.cooldown.CooldownsService;
 import fr.evercraft.everapi.services.cooldown.CooldownsSubject;
 import fr.evercraft.evercooldowns.EverCooldowns;
@@ -77,7 +71,7 @@ public class ECooldownsService implements CooldownsService {
 					            return subject;
 					        }
 					    });
-		this.load();
+		this.reload();
 	}
 	
 	/**
@@ -86,7 +80,13 @@ public class ECooldownsService implements CooldownsService {
 	public void reload() {
 		this.config.reload();
 		
-		this.load();
+		this.commands.clear();
+		this.commands.putAll(this.config.getCooldowns());
+		
+		this.command_default = this.commands.get(CooldownsService.NAME_DEFAULT);
+		if(this.command_default == null) {
+			this.command_default = new ECooldownsValue(CooldownsService.DEFAULT, new LinkedHashMap<String, Long>());
+		}
 		
 		this.cache.cleanUp();
 		for(ESubject subject : this.subjects.values()) {
@@ -100,31 +100,6 @@ public class ECooldownsService implements CooldownsService {
 			return cooldown;
 		}
 		return this.command_default;
-	}
-
-	public void load() {
-		this.commands.clear();
-		
-		for (Entry<Object, ? extends ConfigurationNode> command : this.config.getNode().getChildrenMap().entrySet()) {
-			if(command.getKey() instanceof String) {
-				Map<String, Long> cooldowns = new HashMap<String, Long>();
-				for (Entry<Object, ? extends ConfigurationNode> cooldown : command.getValue().getChildrenMap().entrySet()) {
-					if(cooldown.getKey() instanceof String && !((String) cooldown.getKey()).equalsIgnoreCase(CooldownsService.NAME_DEFAULT)) {
-						long value = cooldown.getValue().getLong(-1L);
-						if(value >= 0) {
-							cooldowns.put((String) cooldown.getKey(), value*1000);
-						}
-					}
-				}
-				this.commands.put((String) command.getKey(), 
-							new ECooldownsValue(command.getValue().getNode(CooldownsService.NAME_DEFAULT).getLong(0)*1000, UtilsMap.valueLinkedASC(cooldowns)));
-			}
-		}
-		
-		this.command_default = this.commands.get(CooldownsService.NAME_DEFAULT);
-		if(this.command_default == null) {
-			this.command_default = new ECooldownsValue(CooldownsService.DEFAULT, new LinkedHashMap<String, Long>());
-		}
 	}
 	
 	

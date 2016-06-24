@@ -26,10 +26,11 @@ import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.EAPermissions;
 import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 import fr.evercraft.evercooldowns.ECCommand;
+import fr.evercraft.evercooldowns.ECMessage.ECMessages;
+import fr.evercraft.evercooldowns.ECPermissions;
 import fr.evercraft.evercooldowns.EverCooldowns;
 
 public class ECReload extends ESubCommand<EverCooldowns> {
@@ -38,7 +39,7 @@ public class ECReload extends ESubCommand<EverCooldowns> {
     }
 	
 	public boolean testPermission(final CommandSource source) {
-		return source.hasPermission(EAPermissions.RELOAD.get());
+		return source.hasPermission(ECPermissions.RELOAD.get());
 	}
 
 	public Text description(final CommandSource source) {
@@ -66,7 +67,7 @@ public class ECReload extends ESubCommand<EverCooldowns> {
 
 	private boolean commandReload(final CommandSource player) {
 		this.plugin.reload();
-		player.sendMessage(EChat.of(EAMessages.PREFIX.get() + EAMessages.RELOAD_COMMAND.get()));
+		player.sendMessage(EChat.of(ECMessages.PREFIX.get() + EAMessages.RELOAD_COMMAND.get()));
 		return true;
 	}
 }

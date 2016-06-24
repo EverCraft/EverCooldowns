@@ -69,9 +69,7 @@ public class ECListener {
     
     @Listener
     public void commandEvent(final CommandEvent.Result event) {
-    	this.plugin.getLogger().warn("CommandEvent.Result");
     	if(event.getResult() && !event.getPlayer().hasPermission(ECPermissions.BYPASS.get())) {
-    		this.plugin.getLogger().warn("CommandEvent.Result ECPermissions");
     		event.getPlayer().addCooldown(event.getCommand());
     	}
     }
