@@ -37,22 +37,27 @@ public class ECooldownsConfig extends EConfig {
 	@Override
 	public void loadDefault() {
 		if(this.getNode().getValue() == null) {
-			HashMap<List<String>, HashMap<String, Integer>> list = new HashMap<List<String>, HashMap<String, Integer>>();
-			HashMap<String, Integer> number = new HashMap<String, Integer>();
-			number.put("moderateur", 5);
-			number.put("default", 10);
-			list.put(Arrays.asList("ping", "heal", "food"), number);
-			this.getNode().setValue(list);
+			HashMap<List<String>, HashMap<String, Integer>> commands = new HashMap<List<String>, HashMap<String, Integer>>();
+			HashMap<String, Integer> permissions = new HashMap<String, Integer>();
+			permissions.put("moderateur", 5);
+			permissions.put("default", 10);
+			commands.put(Arrays.asList("heal", "food"), permissions);
+			this.getNode().setValue(commands);
+			
+			addDefault("ping.moderateur", 1);
+			addDefault("ping.default", 1);
 		}
 		addDefault("default.default", 1);
 	}
 	
-	public Map<String, ECooldownsValue> getCooldowns() {
-		Map<String, ECooldownsValue> commands = new HashMap<String, ECooldownsValue>();
+	public Map<String, EValue> getCooldowns() {
+		Map<String, EValue> commands = new HashMap<String, EValue>();
 		
+		// Liste des commandes
 		for (Entry<Object, ? extends ConfigurationNode> command : this.getNode().getChildrenMap().entrySet()) {
 			if(command.getKey() instanceof String || command.getKey() instanceof List) {
 				Map<String, Long> cooldowns = new HashMap<String, Long>();
+				// Liste des permissions
 				for (Entry<Object, ? extends ConfigurationNode> cooldown : command.getValue().getChildrenMap().entrySet()) {
 					if(cooldown.getKey() instanceof String && !((String) cooldown.getKey()).equalsIgnoreCase(CooldownsService.NAME_DEFAULT)) {
 						long value = cooldown.getValue().getLong(-1L);
@@ -62,7 +67,9 @@ public class ECooldownsConfig extends EConfig {
 					}
 				}
 				
-				ECooldownsValue value = new ECooldownsValue(command.getValue().getNode(CooldownsService.NAME_DEFAULT).getLong(0)*1000, UtilsMap.valueLinkedASC(cooldowns));
+				EValue value = new EValue(command.getValue().getNode(CooldownsService.NAME_DEFAULT).getLong(0)*1000, UtilsMap.valueLinkedASC(cooldowns));
+				
+				// Ajout pour les toutes les commandes
 				if(command.getKey() instanceof String) {
 					commands.put((String) command.getKey(), value);
 				} else {

@@ -21,7 +21,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -52,12 +55,12 @@ public class ESubject implements CooldownsSubject {
 		this.identifier = uuid;
 		this.cooldowns = new ConcurrentHashMap<String, Long>();
 		
-		this.reload();
+		this.load();
 	}
 	
 	public void reload() {
-
-		this.load();
+		this.cooldowns.clear();
+		this.loadCooldowns();
 	}
 
 	public void load() {
@@ -77,6 +80,10 @@ public class ESubject implements CooldownsSubject {
 		}
 	}
 	
+	/**
+	 * Supprime les anciens cooldowns
+	 * @param connection
+	 */
 	public void deleteCooldowns(final Connection connection) {
 		PreparedStatement preparedStatement = null;
 		String query = 	  "DELETE "
@@ -98,6 +105,26 @@ public class ESubject implements CooldownsSubject {
 		}
 	}
 	
+	/**
+	 * Charge les cooldowns
+	 * @param connection
+	 */
+	public void loadCooldowns() {
+		Connection connection = null;
+		try {
+			connection = this.plugin.getDataBases().getConnection();
+			this.loadCooldowns(connection);
+		} catch (ServerDisableException e) {
+			e.execute();
+		} finally {
+			try {
+				if (connection != null) {
+					connection.close();
+				}
+			} catch (SQLException e) {}	
+		}
+	}
+	
 	public void loadCooldowns(final Connection connection) {
 		PreparedStatement preparedStatement = null;
 		String query = 	  "SELECT command, time "
@@ -108,7 +135,7 @@ public class ESubject implements CooldownsSubject {
 			preparedStatement.setString(1, this.identifier.toString());
 			ResultSet result = preparedStatement.executeQuery();
 			while(result.next()) {
-				this.cooldowns.put(result.getString("killer"), result.getTimestamp("time").getTime());
+				this.cooldowns.put(result.getString("command"), result.getTimestamp("time").getTime());
 			}
 		} catch (SQLException e) {
 			this.plugin.getLogger().warn("Error while loading data (uuid='" + this.identifier + "') : " + e.getMessage());
@@ -121,8 +148,23 @@ public class ESubject implements CooldownsSubject {
 		}
 	}
 
+	public void update() {
+		List<String> removes = new ArrayList<String>();
+		long time = System.currentTimeMillis();
+		for(Entry<String, Long> cooldown : this.cooldowns.entrySet()) {
+			if(cooldown.getValue() < time) {
+				removes.add(cooldown.getKey());
+			}
+		}
+		
+		for(String remove : removes) {
+			this.remove(remove);
+		}
+	}
+	
 	@Override
 	public Map<String, Long> getAll() {
+		this.update();
 		return ImmutableMap.copyOf(this.cooldowns);
 	}
 	
@@ -157,6 +199,16 @@ public class ESubject implements CooldownsSubject {
 	public boolean remove(final String command) {
 		if(this.cooldowns.remove(command) != null) {
 			this.removeDatabase(command);
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean clear() {
+		if(!this.cooldowns.isEmpty()) {
+			this.cooldowns.clear();
+			this.clearDatabase();
 			return true;
 		}
 		return false;
@@ -198,6 +250,10 @@ public class ESubject implements CooldownsSubject {
 	
 	private void removeDatabase(final String command) {
 		this.plugin.getThreadAsync().execute(() -> this.removeDatabaseAsync(command));
+	}
+	
+	private void clearDatabase() {
+		this.plugin.getThreadAsync().execute(() -> this.clearDatabaseAsync());
 	}
 	
 	private void addDatabaseAsync(final String command, final long time) {
@@ -255,7 +311,7 @@ public class ESubject implements CooldownsSubject {
 	    }
 	}
 
-	private void removeDatabaseAsync(final String command) {
+	public void removeDatabaseAsync(final String command) {
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		try {
@@ -270,6 +326,30 @@ public class ESubject implements CooldownsSubject {
 			preparedStatement.execute();
 			this.plugin.getLogger().debug("Remove database : (identifier='" + this.identifier + "';"
 																	+ "command='" + command + "')");
+		} catch (SQLException e) {
+	    	this.plugin.getLogger().warn("Error during a change of account : (identifier:'" + this.identifier + "'): " + e.getMessage());
+		} catch (ServerDisableException e) {
+			e.execute();
+		} finally {
+			try {
+				if (preparedStatement != null) preparedStatement.close();
+				if (connection != null) connection.close();
+			} catch (SQLException e) {}
+	    }
+	}
+	
+	public void clearDatabaseAsync() {
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			connection = this.plugin.getDataBases().getConnection();
+			String query = 	  "DELETE "
+							+ "FROM " + this.plugin.getDataBases().getTablePlayer() +" " 
+							+ "WHERE uuid = ? ;";
+			preparedStatement = connection.prepareStatement(query);
+			preparedStatement.setString(1, this.identifier.toString());
+			preparedStatement.execute();
+			this.plugin.getLogger().debug("Remove database : (identifier='" + this.identifier + "')");
 		} catch (SQLException e) {
 	    	this.plugin.getLogger().warn("Error during a change of account : (identifier:'" + this.identifier + "'): " + e.getMessage());
 		} catch (ServerDisableException e) {

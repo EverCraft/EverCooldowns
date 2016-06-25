@@ -16,6 +16,10 @@
  */
 package fr.evercraft.evercooldowns;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
 import fr.evercraft.everapi.exception.PluginDisableException;
 import fr.evercraft.everapi.exception.ServerDisableException;
 import fr.evercraft.everapi.plugin.EDataBase;
@@ -42,5 +46,28 @@ public class ECDataBase extends EDataBase<EverCooldowns> {
 
 	public String getTablePlayer() {
 		return this.getPrefix() + this.table_player;
+	}
+	
+	public void remove() {
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		try {
+			connection = this.getConnection();
+			String query = 	  "DELETE "
+							+ "FROM " + this.plugin.getDataBases().getTablePlayer() +" " 
+							+ "WHERE time < NOW();";
+			preparedStatement = connection.prepareStatement(query);
+			preparedStatement.execute();
+			this.plugin.getLogger().debug("Clear database ");
+		} catch (SQLException e) {
+	    	this.plugin.getLogger().warn("Error during a change of account : " + e.getMessage());
+		} catch (ServerDisableException e) {
+			e.execute();
+		} finally {
+			try {
+				if (preparedStatement != null) preparedStatement.close();
+				if (connection != null) connection.close();
+			} catch (SQLException e) {}
+	    }
 	}
 }

@@ -43,8 +43,8 @@ public class ECooldownsService implements CooldownsService {
 	private final ConcurrentMap<UUID, ESubject> subjects;
 	private final LoadingCache<UUID, ESubject> cache;
 	
-	private final ConcurrentMap<String, ECooldownsValue> commands;
-	private ECooldownsValue command_default;
+	private final ConcurrentMap<String, EValue> commands;
+	private EValue command_default;
 	private final ECooldownsConfig config;
 	
 
@@ -53,7 +53,7 @@ public class ECooldownsService implements CooldownsService {
 		
 		this.config = new ECooldownsConfig(this.plugin);
 		
-		this.commands = new ConcurrentHashMap<String, ECooldownsValue>();
+		this.commands = new ConcurrentHashMap<String, EValue>();
 		this.subjects = new ConcurrentHashMap<UUID, ESubject>();
 		this.cache = CacheBuilder.newBuilder()
 					    .maximumSize(100)
@@ -78,6 +78,8 @@ public class ECooldownsService implements CooldownsService {
 	 * Rechargement : Vide le cache et recharge tous les joueurs
 	 */
 	public void reload() {
+		this.plugin.getDataBases().remove();
+		
 		this.config.reload();
 		
 		this.commands.clear();
@@ -85,7 +87,7 @@ public class ECooldownsService implements CooldownsService {
 		
 		this.command_default = this.commands.get(CooldownsService.NAME_DEFAULT);
 		if(this.command_default == null) {
-			this.command_default = new ECooldownsValue(CooldownsService.DEFAULT, new LinkedHashMap<String, Long>());
+			this.command_default = new EValue(CooldownsService.DEFAULT, new LinkedHashMap<String, Long>());
 		}
 		
 		this.cache.cleanUp();
@@ -94,8 +96,8 @@ public class ECooldownsService implements CooldownsService {
 		}
 	}
 	
-	public ECooldownsValue getCommands(String command) {
-		ECooldownsValue cooldown = this.commands.get(command);
+	public EValue getCommands(String command) {
+		EValue cooldown = this.commands.get(command);
 		if(cooldown != null) {
 			return cooldown;
 		}

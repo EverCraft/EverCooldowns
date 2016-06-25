@@ -28,6 +28,15 @@ public enum ECPermissions implements EnumPermission {
 	HELP("help"),
 	RELOAD("reload"),
 	
+	LIST("list.command"),
+	LIST_OTHERS("list.others"),
+	
+	CLEAR("clear.command"),
+	CLEAR_OTHERS("clear.others"),
+	
+	REMOVE("remove.command"),
+	REMOVE_OTHERS("remove.others"),
+	
 	COOLDOWN("cooldown"),
 	BYPASS("bypass");
 

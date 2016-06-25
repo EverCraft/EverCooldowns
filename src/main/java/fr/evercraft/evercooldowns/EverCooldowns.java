@@ -22,7 +22,10 @@ import org.spongepowered.api.plugin.Plugin;
 import fr.evercraft.everapi.exception.PluginDisableException;
 import fr.evercraft.everapi.plugin.EPlugin;
 import fr.evercraft.everapi.services.cooldown.CooldownsService;
+import fr.evercraft.evercooldowns.command.sub.ECClear;
+import fr.evercraft.evercooldowns.command.sub.ECList;
 import fr.evercraft.evercooldowns.command.sub.ECReload;
+import fr.evercraft.evercooldowns.command.sub.ECRemove;
 import fr.evercraft.evercooldowns.service.ECooldownsService;
 
 @Plugin(id = "fr.evercraft.evercooldowns", 
@@ -57,8 +60,10 @@ public class EverCooldowns extends EPlugin {
 		this.getGame().getEventManager().registerListeners(this, new ECListener(this));
 		
 		ECCommand command = new ECCommand(this);
-		
 		command.add(new ECReload(this, command));
+		command.add(new ECList(this, command));
+		command.add(new ECRemove(this, command));
+		command.add(new ECClear(this, command));
 	}
 
 	protected void onReload() throws PluginDisableException{

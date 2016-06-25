@@ -25,13 +25,13 @@ import org.spongepowered.api.service.permission.Subject;
 
 import fr.evercraft.evercooldowns.ECPermissions;
 
-public class ECooldownsValue {
+public class EValue {
 
 	private final Long cooldown_default;
 	
 	private final LinkedHashMap<String, Long> cooldowns;
 	
-	public ECooldownsValue(final Long cooldown_default, final LinkedHashMap<String, Long> cooldowns) {
+	public EValue(final Long cooldown_default, final LinkedHashMap<String, Long> cooldowns) {
 		this.cooldown_default = cooldown_default;
 		this.cooldowns = cooldowns;
 	}
