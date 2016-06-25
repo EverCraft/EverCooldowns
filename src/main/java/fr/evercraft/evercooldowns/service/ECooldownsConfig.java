@@ -63,6 +63,8 @@ public class ECooldownsConfig extends EConfig {
 						long value = cooldown.getValue().getLong(-1L);
 						if(value >= 0) {
 							cooldowns.put((String) cooldown.getKey(), value*1000);
+						} else {
+							this.plugin.getLogger().warn("The value of the cooldown is invalid : (name='" + name.toString() + "';value='" + value + "')");
 						}
 					}
 				}
@@ -72,15 +74,22 @@ public class ECooldownsConfig extends EConfig {
 				// Ajout pour les toutes les commandes
 				if(command.getKey() instanceof String) {
 					commands.put((String) command.getKey(), value);
-				} else {
+				} else if(command.getKey() instanceof List) {
 					for(Object name : ((List<?>) command.getKey())) {
 						if(name instanceof String) {
 							commands.put((String) name, value);
+						} else {
+							this.plugin.getLogger().warn("The name of the cooldown is invalid : (name='" + name.toString() + "')");
 						}
 					}
+				} else {
+					this.plugin.getLogger().warn("The name of the cooldown is invalid : (name='" + command.getKey().toString() + "')");
 				}
+			} else {
+				this.plugin.getLogger().warn("The name of the cooldown is invalid : (name='" + command.getKey().toString() + "')");
 			}
 		}
+		this.plugin.getLogger().info("Loading " + commands.size() + " cooldown(s)");
 		return commands;
 	}
 }
