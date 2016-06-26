@@ -71,7 +71,7 @@ public class ECooldownsService implements CooldownsService {
 					            return subject;
 					        }
 					    });
-		this.reload();
+		this.load();
 	}
 	
 	/**
@@ -83,16 +83,21 @@ public class ECooldownsService implements CooldownsService {
 		this.config.reload();
 		
 		this.commands.clear();
+		
+		this.load();
+		
+		this.cache.cleanUp();
+		for(ESubject subject : this.subjects.values()) {
+			subject.reload();
+		}
+	}
+	
+	public void load() {
 		this.commands.putAll(this.config.getCooldowns());
 		
 		this.command_default = this.commands.get(CooldownsService.NAME_DEFAULT);
 		if(this.command_default == null) {
 			this.command_default = new EValue(CooldownsService.DEFAULT, new LinkedHashMap<String, Long>());
-		}
-		
-		this.cache.cleanUp();
-		for(ESubject subject : this.subjects.values()) {
-			subject.reload();
 		}
 	}
 	

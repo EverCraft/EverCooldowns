@@ -18,11 +18,14 @@ package fr.evercraft.evercooldowns.service;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.google.common.reflect.TypeToken;
+
 import ninja.leaping.configurate.ConfigurationNode;
+import ninja.leaping.configurate.commented.CommentedConfigurationNode;
+import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import fr.evercraft.everapi.java.UtilsMap;
 import fr.evercraft.everapi.plugin.file.EConfig;
 import fr.evercraft.everapi.services.cooldown.CooldownsService;
@@ -37,56 +40,132 @@ public class ECooldownsConfig extends EConfig {
 	@Override
 	public void loadDefault() {
 		if(this.getNode().getValue() == null) {
-			HashMap<List<String>, HashMap<String, Integer>> commands = new HashMap<List<String>, HashMap<String, Integer>>();
-			HashMap<String, Integer> permissions = new HashMap<String, Integer>();
-			permissions.put("moderateur", 5);
-			permissions.put("default", 10);
-			commands.put(Arrays.asList("heal", "food"), permissions);
-			this.getNode().setValue(commands);
+			// Heal
+			CommentedConfigurationNode heal_config = this.get("heal_group");
+			heal_config.getNode("commands").setValue(Arrays.asList("heal", "food"));
 			
-			addDefault("ping.moderateur", 1);
-			addDefault("ping.default", 1);
+			HashMap<String, Long> heal_permissions = new HashMap<String, Long>();
+			heal_permissions.put("default", 5L);
+			heal_permissions.put("moderator", 1L);
+			heal_config.getNode("permissions").setValue(heal_permissions);
+			
+			// Lag
+			CommentedConfigurationNode lag_group = this.get("lag_group");
+			lag_group.getNode("command").setValue("lag");
+			
+			HashMap<String, Long> lag_permissions = new HashMap<String, Long>();
+			lag_permissions.put("default", 10L);
+			lag_permissions.put("moderator", 5L);
+			lag_group.getNode("permissions").setValue(lag_permissions);
+			
+			// Ping
+			CommentedConfigurationNode ping_group = this.get("ping");
+			
+			HashMap<String, Long> ping_permissions = new HashMap<String, Long>();
+			ping_permissions.put("default", 2L);
+			ping_permissions.put("moderator", 1L);
+			ping_group.setValue(ping_permissions);
+			
+			// Default
+			CommentedConfigurationNode default_group = this.get("default");
+			
+			HashMap<String, Long> default_permissions = new HashMap<String, Long>();
+			default_permissions.put("default", 1L);
+			default_permissions.put("admin", 0L);
+			default_group.setValue(default_permissions);
+		} else {
+			addDefault("default.default", 0);
 		}
-		addDefault("default.default", 1);
 	}
 	
 	public Map<String, EValue> getCooldowns() {
 		Map<String, EValue> commands = new HashMap<String, EValue>();
 		
-		// Liste des commandes
 		for (Entry<Object, ? extends ConfigurationNode> command : this.getNode().getChildrenMap().entrySet()) {
-			if(command.getKey() instanceof String || command.getKey() instanceof List) {
-				Map<String, Long> cooldowns = new HashMap<String, Long>();
-				// Liste des permissions
-				for (Entry<Object, ? extends ConfigurationNode> cooldown : command.getValue().getChildrenMap().entrySet()) {
-					if(cooldown.getKey() instanceof String && !((String) cooldown.getKey()).equalsIgnoreCase(CooldownsService.NAME_DEFAULT)) {
-						long value = cooldown.getValue().getLong(-1L);
-						if(value >= 0) {
-							cooldowns.put((String) cooldown.getKey(), value*1000);
+			if(command.getKey() instanceof String) {
+				String group = (String) command.getKey();
+				ConfigurationNode config_commands = command.getValue().getNode("commands");
+				ConfigurationNode config_command = command.getValue().getNode("command");
+				ConfigurationNode config_permissions = command.getValue().getNode("permissions");
+				
+				// Goupe
+				if((!config_commands.isVirtual() || !config_command.isVirtual()) && !config_permissions.isVirtual()) {
+					Map<String, Long> cooldowns = new HashMap<String, Long>();
+					// Liste des permissions
+					for (Entry<Object, ? extends ConfigurationNode> cooldown : config_permissions.getChildrenMap().entrySet()) {
+						if(cooldown.getKey() instanceof String) {
+							String permission = (String) cooldown.getKey();
+							if(!permission.equalsIgnoreCase(CooldownsService.NAME_DEFAULT)) {
+								long value = cooldown.getValue().getLong(-1L);
+								if(value >= 0) {
+									cooldowns.put((String) cooldown.getKey(), value*1000);
+								} else {
+									this.plugin.getLogger().warn("The value of the cooldown is invalid : (group='" + group + "';permission='" + permission + "';value='" + value + "')");
+								}
+							}
 						} else {
-							this.plugin.getLogger().warn("The value of the cooldown is invalid : (name='" + name.toString() + "';value='" + value + "')");
+							this.plugin.getLogger().warn("The name of the permission is invalid : (group='" + group + "';permission='" + cooldown.getKey().toString() + "')");
 						}
 					}
-				}
-				
-				EValue value = new EValue(command.getValue().getNode(CooldownsService.NAME_DEFAULT).getLong(0)*1000, UtilsMap.valueLinkedASC(cooldowns));
-				
-				// Ajout pour les toutes les commandes
-				if(command.getKey() instanceof String) {
-					commands.put((String) command.getKey(), value);
-				} else if(command.getKey() instanceof List) {
-					for(Object name : ((List<?>) command.getKey())) {
-						if(name instanceof String) {
-							commands.put((String) name, value);
+					
+					EValue value = new EValue(config_permissions.getNode(CooldownsService.NAME_DEFAULT).getLong(0)*1000, UtilsMap.valueLinkedASC(cooldowns));
+					if(config_commands.isVirtual()) {
+						String name = config_command.getString("");
+						if(!name.isEmpty()) {
+							if(!commands.containsKey(name)) {
+								commands.put(name, value);
+							} else {
+								this.plugin.getLogger().warn("The name is already used : (group='" + group + "';name='" + name + "')");
+							}
 						} else {
-							this.plugin.getLogger().warn("The name of the cooldown is invalid : (name='" + name.toString() + "')");
+							this.plugin.getLogger().warn("The command name is empty : (group='" + group + "')");
+						}
+					} else {
+						try {
+							for(String name : config_commands.getList(TypeToken.of(String.class))) {
+								if(!name.isEmpty()) {
+									if(!commands.containsKey(name)) {
+										commands.put(name, value);
+									} else {
+										this.plugin.getLogger().warn("The name is already used : (group='" + group + "';name='" + name + "')");
+									}
+								} else {
+									this.plugin.getLogger().warn("The name of a command is empty : (group='" + group + "')");
+								}
+							}
+						} catch (ObjectMappingException e) {
+							this.plugin.getLogger().warn("Unable to read the list of commands : (group='" + group + "')");
 						}
 					}
+					
+				// Aucun groupe
 				} else {
-					this.plugin.getLogger().warn("The name of the cooldown is invalid : (name='" + command.getKey().toString() + "')");
+					Map<String, Long> cooldowns = new HashMap<String, Long>();
+					// Liste des permissions
+					for (Entry<Object, ? extends ConfigurationNode> cooldown : command.getValue().getChildrenMap().entrySet()) {
+						if(cooldown.getKey() instanceof String) {
+							String permission = (String) cooldown.getKey();
+							if(!permission.equalsIgnoreCase(CooldownsService.NAME_DEFAULT)) {
+								long value = cooldown.getValue().getLong(-1L);
+								if(value >= 0) {
+									cooldowns.put((String) cooldown.getKey(), value*1000);
+								} else {
+									this.plugin.getLogger().warn("The value of the cooldown is invalid : (name='" + group + "';permission='" + permission + "';value='" + value + "')");
+								}
+							}
+						} else {
+							this.plugin.getLogger().warn("The name of the permission is invalid : (name='" + group + "';permission='" + cooldown.getKey().toString() + "')");
+						}
+					}
+					
+					if(!commands.containsKey(group)) {
+						commands.put(group, new EValue(command.getValue().getNode(CooldownsService.NAME_DEFAULT).getLong(0)*1000, UtilsMap.valueLinkedASC(cooldowns)));
+					} else {
+						this.plugin.getLogger().warn("The name is already used : (name='" + group + "')");
+					}
 				}
 			} else {
-				this.plugin.getLogger().warn("The name of the cooldown is invalid : (name='" + command.getKey().toString() + "')");
+				this.plugin.getLogger().warn("The group name is invalid : (group='" + command.getKey().toString() + "')");
 			}
 		}
 		this.plugin.getLogger().info("Loading " + commands.size() + " cooldown(s)");
