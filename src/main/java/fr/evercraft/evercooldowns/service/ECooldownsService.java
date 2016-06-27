@@ -101,6 +101,19 @@ public class ECooldownsService implements CooldownsService {
 		}
 	}
 	
+	public void clearAll() {
+		this.plugin.getThreadAsync().execute(() -> this.clearAllAsync());
+	}
+	
+	public void clearAllAsync() {
+		this.plugin.getDataBases().clearAll();
+		
+		this.cache.cleanUp();
+		for(ESubject subject : this.subjects.values()) {
+			subject.reload();
+		}
+	}
+	
 	public EValue getCommands(String command) {
 		EValue cooldown = this.commands.get(command);
 		if(cooldown != null) {

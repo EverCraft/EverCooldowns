@@ -44,6 +44,11 @@ public class EValue {
 		return cooldowns;
 	}
 	
+	/**
+	 * Donne la valeur du cooldown pour un Subject
+	 * @param subject Le subject
+	 * @return En Millisecondes
+	 */
 	public Long get(final Subject subject) {
 		Long cooldown = null;
 		

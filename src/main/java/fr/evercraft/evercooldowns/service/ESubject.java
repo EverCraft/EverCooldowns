@@ -107,7 +107,6 @@ public class ESubject implements CooldownsSubject {
 	
 	/**
 	 * Charge les cooldowns
-	 * @param connection
 	 */
 	public void loadCooldowns() {
 		Connection connection = null;
@@ -125,6 +124,10 @@ public class ESubject implements CooldownsSubject {
 		}
 	}
 	
+	/**
+	 * Charge les cooldowns
+	 * @param connection
+	 */
 	public void loadCooldowns(final Connection connection) {
 		PreparedStatement preparedStatement = null;
 		String query = 	  "SELECT command, time "

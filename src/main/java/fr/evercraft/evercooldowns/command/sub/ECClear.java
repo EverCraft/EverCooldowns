@@ -60,7 +60,7 @@ public class ECClear extends ESubCommand<EverCooldowns> {
 
 	public Text help(final CommandSource source) {
 		if(source.hasPermission(ECPermissions.CLEAR_OTHERS.get())) {
-			return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.get() + ">")
+			return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.get() + "|*>")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -83,13 +83,21 @@ public class ECClear extends ESubCommand<EverCooldowns> {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
 		} else if(args.size() == 1) {
-			Optional<User> optUser = this.plugin.getEServer().getUser(args.get(0));
-			// Le joueur existe
-			if(optUser.isPresent()){
-				resultat = this.commandClear(source, optUser.get());
-			// Le joueur est introuvable
+			if(source.hasPermission(ECPermissions.CLEAR_OTHERS.get())) {
+				if(args.get(0).equalsIgnoreCase("*") || args.get(0).equalsIgnoreCase("all")) {
+					resultat = this.commandClearAll(source);
+				} else {
+					Optional<User> optUser = this.plugin.getEServer().getUser(args.get(0));
+					// Le joueur existe
+					if(optUser.isPresent()){
+						resultat = this.commandClear(source, optUser.get());
+					// Le joueur est introuvable
+					} else {
+						source.sendMessage(EChat.of(ECMessages.PREFIX.get() + EAMessages.PLAYER_NOT_FOUND.get()));
+					}
+				}
 			} else {
-				source.sendMessage(EChat.of(ECMessages.PREFIX.get() + EAMessages.PLAYER_NOT_FOUND.get()));
+				source.sendMessage(EAMessages.NO_PERMISSION.getText());
 			}
 		} else {
 			source.sendMessage(this.help(source));
@@ -106,34 +114,42 @@ public class ECClear extends ESubCommand<EverCooldowns> {
 		return true;
 	}
 	
+	private boolean commandClearAll(final CommandSource player) {
+		this.plugin.getDataBases().clearAll();
+		player.sendMessage(ECMessages.PREFIX.getText().concat(ECMessages.CLEAR_EQUALS.getText()));
+		return true;
+	}
+	
 	private boolean commandClear(final CommandSource staff, final User user) {
-		boolean resultat = false;
-		
 		if(staff.getIdentifier().equals(user.getIdentifier()) && staff instanceof EPlayer) {
-			resultat = this.commandClear((EPlayer) staff);
+			return this.commandClear((EPlayer) staff);
 		} else {
-			Optional<CooldownsSubject> optSubject = this.plugin.getService().get(user.getUniqueId());
-			if(optSubject.isPresent()) {
-				CooldownsSubject subject = optSubject.get();
-				if(subject.clear()) {
-					staff.sendMessage(EChat.of(ECMessages.PREFIX.get() + ECMessages.CLEAR_STAFF.get()
-							.replaceAll("<staff>", staff.getName())
-							.replaceAll("<player>", user.getName())));
-					Optional<Player> player = user.getPlayer();
-					if(player.isPresent()) {
-						player.get().sendMessage(EChat.of(ECMessages.PREFIX.get() + ECMessages.CLEAR_PLAYER.get()
-								.replaceAll("<staff>", staff.getName())
-								.replaceAll("<player>", user.getName())));
-					}
-				} else {
-					staff.sendMessage(EChat.of(ECMessages.PREFIX.get() + ECMessages.CLEAR_ERROR_STAFF.get()
+			this.plugin.getThreadAsync().execute(() -> this.commandClearAsync(staff, user));
+		}
+		return true;
+	}
+	
+	private void commandClearAsync(final CommandSource staff, final User user) {
+		Optional<CooldownsSubject> optSubject = this.plugin.getService().get(user.getUniqueId());
+		if(optSubject.isPresent()) {
+			CooldownsSubject subject = optSubject.get();
+			if(subject.clear()) {
+				staff.sendMessage(EChat.of(ECMessages.PREFIX.get() + ECMessages.CLEAR_STAFF.get()
+						.replaceAll("<staff>", staff.getName())
+						.replaceAll("<player>", user.getName())));
+				Optional<Player> player = user.getPlayer();
+				if(player.isPresent()) {
+					player.get().sendMessage(EChat.of(ECMessages.PREFIX.get() + ECMessages.CLEAR_PLAYER.get()
 							.replaceAll("<staff>", staff.getName())
 							.replaceAll("<player>", user.getName())));
 				}
 			} else {
-				staff.sendMessage(EChat.of(ECMessages.PREFIX.get() + EAMessages.PLAYER_NOT_FOUND.get()));
+				staff.sendMessage(EChat.of(ECMessages.PREFIX.get() + ECMessages.CLEAR_ERROR_STAFF.get()
+						.replaceAll("<staff>", staff.getName())
+						.replaceAll("<player>", user.getName())));
 			}
+		} else {
+			staff.sendMessage(EChat.of(ECMessages.PREFIX.get() + EAMessages.PLAYER_NOT_FOUND.get()));
 		}
-		return resultat;
 	}
 }

@@ -55,6 +55,9 @@ public class ECListener {
         this.plugin.getService().removePlayer(event.getTargetEntity().getUniqueId());
     }
     
+    /**
+     * Vérifie le cooldown
+     */
     @Listener
     public void commandEvent(final CommandEvent.Send event) {
         if(!event.getPlayer().hasPermission(ECPermissions.BYPASS.get())) {
@@ -67,6 +70,9 @@ public class ECListener {
         }
     }
     
+    /**
+     * Ajoute le cooldown
+     */
     @Listener
     public void commandEvent(final CommandEvent.Result event) {
     	if(event.getResult() && !event.getPlayer().hasPermission(ECPermissions.BYPASS.get())) {

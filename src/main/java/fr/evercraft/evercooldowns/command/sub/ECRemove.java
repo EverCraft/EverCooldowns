@@ -112,36 +112,38 @@ public class ECRemove extends ESubCommand<EverCooldowns> {
 	}
 	
 	private boolean commandRemove(final CommandSource staff, final User user, final String cooldown) {
-		boolean resultat = false;
-		
 		if(staff.getIdentifier().equals(user.getIdentifier()) && staff instanceof EPlayer) {
-			resultat = this.commandRemove((EPlayer) staff, cooldown);
+			return this.commandRemove((EPlayer) staff, cooldown);
 		} else {
-			Optional<CooldownsSubject> optSubject = this.plugin.getService().get(user.getUniqueId());
-			if(optSubject.isPresent()) {
-				CooldownsSubject subject = optSubject.get();
-				if(subject.remove(cooldown)) {
-					staff.sendMessage(EChat.of(ECMessages.PREFIX.get() + ECMessages.REMOVE_STAFF.get()
-							.replaceAll("<staff>", staff.getName())
-							.replaceAll("<player>", user.getName())
-							.replaceAll("<cooldown>", cooldown)));
-					Optional<Player> player = user.getPlayer();
-					if(player.isPresent()) {
-						player.get().sendMessage(EChat.of(ECMessages.PREFIX.get() + ECMessages.REMOVE_PLAYER.get()
-								.replaceAll("<staff>", staff.getName())
-								.replaceAll("<player>", user.getName())
-								.replaceAll("<cooldown>", cooldown)));
-					}
-				} else {
-					staff.sendMessage(EChat.of(ECMessages.PREFIX.get() + ECMessages.REMOVE_ERROR_STAFF.get()
+			this.plugin.getThreadAsync().execute(() -> this.commandRemoveAsync(staff, user, cooldown));
+		}
+		return true;
+	}
+	
+	private void commandRemoveAsync(final CommandSource staff, final User user, final String cooldown) {
+		Optional<CooldownsSubject> optSubject = this.plugin.getService().get(user.getUniqueId());
+		if(optSubject.isPresent()) {
+			CooldownsSubject subject = optSubject.get();
+			if(subject.remove(cooldown)) {
+				staff.sendMessage(EChat.of(ECMessages.PREFIX.get() + ECMessages.REMOVE_STAFF.get()
+						.replaceAll("<staff>", staff.getName())
+						.replaceAll("<player>", user.getName())
+						.replaceAll("<cooldown>", cooldown)));
+				Optional<Player> player = user.getPlayer();
+				if(player.isPresent()) {
+					player.get().sendMessage(EChat.of(ECMessages.PREFIX.get() + ECMessages.REMOVE_PLAYER.get()
 							.replaceAll("<staff>", staff.getName())
 							.replaceAll("<player>", user.getName())
 							.replaceAll("<cooldown>", cooldown)));
 				}
 			} else {
-				staff.sendMessage(EChat.of(ECMessages.PREFIX.get() + EAMessages.PLAYER_NOT_FOUND.get()));
+				staff.sendMessage(EChat.of(ECMessages.PREFIX.get() + ECMessages.REMOVE_ERROR_STAFF.get()
+						.replaceAll("<staff>", staff.getName())
+						.replaceAll("<player>", user.getName())
+						.replaceAll("<cooldown>", cooldown)));
 			}
+		} else {
+			staff.sendMessage(EChat.of(ECMessages.PREFIX.get() + EAMessages.PLAYER_NOT_FOUND.get()));
 		}
-		return resultat;
 	}
 }

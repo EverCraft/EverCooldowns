@@ -123,48 +123,50 @@ public class ECList extends ESubCommand<EverCooldowns> {
 		} else {
 			player.sendMessage(ECMessages.PREFIX.getText().concat(ECMessages.LIST_PLAYER_EMPTY.getText()));
 		}
-		return true;
+		return false;
 	}
 	
 	private boolean commandList(final CommandSource staff, final User user) {
-		boolean resultat = false;
-		
 		if(staff.getIdentifier().equals(user.getIdentifier()) && staff instanceof EPlayer) {
-			resultat = this.commandList((EPlayer) staff);
+			return this.commandList((EPlayer) staff);
 		} else {
-			Optional<CooldownsSubject> optSubject = this.plugin.getService().get(user.getUniqueId());
-			if(optSubject.isPresent()) {
-				CooldownsSubject subject = optSubject.get();
-				Map<String, Long> cooldowns = subject.getAll();
-				if(!cooldowns.isEmpty()) {
-					List<Text> lists = new ArrayList<Text>();
-					if(staff.hasPermission(ECPermissions.REMOVE.get()) && staff.hasPermission(ECPermissions.REMOVE_OTHERS.get())) {
-						for (Entry<String, Long> cooldown : cooldowns.entrySet()) {
-							lists.add(ETextBuilder.toBuilder(ECMessages.LIST_STAFF_LINE.get()
-									.replaceAll("<cooldown>", cooldown.getKey())
-									.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(cooldown.getValue())))
-								.replace("<delete>", this.getButtonDeleteOthers(user, cooldown.getKey()))
-								.build());
-						}
-					} else {
-						for (Entry<String, Long> cooldown : cooldowns.entrySet()) {
-							lists.add(EChat.of(ECMessages.LIST_STAFF_LINE.get()
-									.replaceAll("<cooldown>", cooldown.getKey())
-									.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(cooldown.getValue()))));
-						}
-					}
-					this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(ECMessages.LIST_STAFF_TITLE.getText().toBuilder()
-							.onClick(TextActions.runCommand(this.getName())).build(), lists, staff);
-				} else {
-					staff.sendMessage(EChat.of(ECMessages.PREFIX.get() + ECMessages.LIST_STAFF_EMPTY.get()
-							.replaceAll("<staff>", staff.getName())
-							.replaceAll("<player>", user.getName())));
-				}
-			} else {
-				staff.sendMessage(EChat.of(ECMessages.PREFIX.get() + EAMessages.PLAYER_NOT_FOUND.get()));
-			}
+			this.plugin.getThreadAsync().execute(() -> this.commandListAsync(staff, user));
 		}
-		return resultat;
+		return false;
+	}
+	
+	private void commandListAsync(final CommandSource staff, final User user) {
+		Optional<CooldownsSubject> optSubject = this.plugin.getService().get(user.getUniqueId());
+		if(optSubject.isPresent()) {
+			CooldownsSubject subject = optSubject.get();
+			Map<String, Long> cooldowns = subject.getAll();
+			if(!cooldowns.isEmpty()) {
+				List<Text> lists = new ArrayList<Text>();
+				if(staff.hasPermission(ECPermissions.REMOVE.get()) && staff.hasPermission(ECPermissions.REMOVE_OTHERS.get())) {
+					for (Entry<String, Long> cooldown : cooldowns.entrySet()) {
+						lists.add(ETextBuilder.toBuilder(ECMessages.LIST_STAFF_LINE.get()
+								.replaceAll("<cooldown>", cooldown.getKey())
+								.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(cooldown.getValue())))
+							.replace("<delete>", this.getButtonDeleteOthers(user, cooldown.getKey()))
+							.build());
+					}
+				} else {
+					for (Entry<String, Long> cooldown : cooldowns.entrySet()) {
+						lists.add(EChat.of(ECMessages.LIST_STAFF_LINE.get()
+								.replaceAll("<cooldown>", cooldown.getKey())
+								.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(cooldown.getValue()))));
+					}
+				}
+				this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(ECMessages.LIST_STAFF_TITLE.getText().toBuilder()
+						.onClick(TextActions.runCommand(this.getName())).build(), lists, staff);
+			} else {
+				staff.sendMessage(EChat.of(ECMessages.PREFIX.get() + ECMessages.LIST_STAFF_EMPTY.get()
+						.replaceAll("<staff>", staff.getName())
+						.replaceAll("<player>", user.getName())));
+			}
+		} else {
+			staff.sendMessage(EChat.of(ECMessages.PREFIX.get() + EAMessages.PLAYER_NOT_FOUND.get()));
+		}
 	}
 	
 	public Text getButtonDelete(final EPlayer player, final String cooldown){
