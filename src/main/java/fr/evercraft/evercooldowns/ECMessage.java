@@ -41,15 +41,15 @@ public class ECMessage extends EMessage {
 		
 		// Clear
 		CLEAR_DESCRIPTION("clear.description", "Supprime tous les cooldowns d'un joueur"),
-		CLEAR_STAFF("clear.staff", "&7Tous les cooldowns de &6<player> &7ont bien été supprimé."),
-		CLEAR_PLAYER("clear.player", "&7Tous vos cooldowns ont été supprimé par &6<staff>&7."),
-		CLEAR_EQUALS("clear.equals", "&7Tous vos cooldowns ont bien été supprimé."),
-		CLEAR_ALL("clear.all", "&7Tous les cooldowns ont bien été supprimé."),
+		CLEAR_STAFF("clear.staff", "&7Tous les cooldowns de &6<player> &7ont bien été supprimés."),
+		CLEAR_PLAYER("clear.player", "&7Tous vos cooldowns ont été supprimés par &6<staff>&7."),
+		CLEAR_EQUALS("clear.equals", "&7Tous vos cooldowns ont bien été supprimés."),
+		CLEAR_ALL("clear.all", "&7Tous les cooldowns ont bien été supprimés."),
 		CLEAR_ERROR_STAFF("clear.errorStaff", "&6<player> &cn'a aucun cooldown."),
 		CLEAR_ERROR_PLAYER("clear.errorEquals", "&cVous n'avez aucun cooldown."),
 		
 		// List
-		LIST_DESCRIPTION("list.description", "Affiche la liste de tous les cooldowns d'un joueur"),
+		LIST_DESCRIPTION("list.description", "Affiche la liste des cooldowns d'un joueur"),
 		LIST_PLAYER_TITLE("list.playerTitle", "&aLa liste de vos cooldowns"),
 		LIST_PLAYER_LINE("list.playerLine", "    &6&l➤  &6<cooldown> : &a<time> <delete>"),
 		LIST_PLAYER_EMPTY("list.playerEmpty", "&7Vous n'avez aucun cooldown."),
