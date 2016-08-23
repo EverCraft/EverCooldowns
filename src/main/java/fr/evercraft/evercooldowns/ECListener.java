@@ -60,9 +60,9 @@ public class ECListener {
      */
     @Listener
     public void commandEvent(final CommandEvent.Send event) {
-        if(!event.getPlayer().hasPermission(ECPermissions.BYPASS.get())) {
+        if (!event.getPlayer().hasPermission(ECPermissions.BYPASS.get())) {
         	Optional<Long> cooldown = event.getPlayer().getCooldown(event.getCommand());
-        	if(cooldown.isPresent()) {
+        	if (cooldown.isPresent()) {
         		event.setCancelled(true);
         		event.getPlayer().sendMessage(event.getPlayer().replaceVariable(ECMessages.PREFIX.get() + ECMessages.COOLDOWN.get()
         				.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(cooldown.get()))));
@@ -75,7 +75,7 @@ public class ECListener {
      */
     @Listener
     public void commandEvent(final CommandEvent.Result event) {
-    	if(event.getResult() && !event.getPlayer().hasPermission(ECPermissions.BYPASS.get())) {
+    	if (event.getResult() && !event.getPlayer().hasPermission(ECPermissions.BYPASS.get())) {
     		event.getPlayer().addCooldown(event.getCommand());
     	}
     }

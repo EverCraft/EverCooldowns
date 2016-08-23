@@ -87,7 +87,7 @@ public class ECooldownsService implements CooldownsService {
 		this.load();
 		
 		this.cache.cleanUp();
-		for(ESubject subject : this.subjects.values()) {
+		for (ESubject subject : this.subjects.values()) {
 			subject.reload();
 		}
 	}
@@ -96,7 +96,7 @@ public class ECooldownsService implements CooldownsService {
 		this.commands.putAll(this.config.getCooldowns());
 		
 		this.command_default = this.commands.get(CooldownsService.NAME_DEFAULT);
-		if(this.command_default == null) {
+		if (this.command_default == null) {
 			this.command_default = new EValue(CooldownsService.DEFAULT, new LinkedHashMap<String, Long>());
 		}
 	}
@@ -109,14 +109,14 @@ public class ECooldownsService implements CooldownsService {
 		this.plugin.getDataBases().clearAll();
 		
 		this.cache.cleanUp();
-		for(ESubject subject : this.subjects.values()) {
+		for (ESubject subject : this.subjects.values()) {
 			subject.reload();
 		}
 	}
 	
 	public EValue getCommands(String command) {
 		EValue cooldown = this.commands.get(command);
-		if(cooldown != null) {
+		if (cooldown != null) {
 			return cooldown;
 		}
 		return this.command_default;
@@ -132,7 +132,7 @@ public class ECooldownsService implements CooldownsService {
 		Preconditions.checkNotNull(uuid, "uuid");
 		
 		try {
-			if(!this.subjects.containsKey(uuid)) {
+			if (!this.subjects.containsKey(uuid)) {
 				return Optional.ofNullable(this.cache.get(uuid));
 	    	}
 	    	return Optional.ofNullable(this.subjects.get(uuid));
@@ -161,7 +161,7 @@ public class ECooldownsService implements CooldownsService {
 		
 		ESubject player = this.cache.getIfPresent(uuid);
 		// Si le joueur est dans le cache
-		if(player != null) {
+		if (player != null) {
 			this.subjects.putIfAbsent(uuid, player);
 			this.plugin.getLogger().debug("Loading player cache : " + uuid.toString());
 		// Si le joueur n'est pas dans le cache
@@ -183,7 +183,7 @@ public class ECooldownsService implements CooldownsService {
 		
 		ESubject player = this.subjects.remove(uuid);
 		// Si le joueur existe
-		if(player != null) {
+		if (player != null) {
 			this.cache.put(uuid, player);
 			//this.plugin.getManagerEvent().post(player, PermUserEvent.Action.USER_REMOVED);
 			this.plugin.getLogger().debug("Unloading the player : " + uuid.toString());

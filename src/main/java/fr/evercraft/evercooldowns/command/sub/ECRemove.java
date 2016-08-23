@@ -53,16 +53,16 @@ public class ECRemove extends ESubCommand<EverCooldowns> {
 	
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggest = new ArrayList<String>();
-		if(args.size() == 1) {
+		if (args.size() == 1) {
 			suggest.add(EAMessages.ARGS_COOLDOWN.get());
-		} else if(args.size() == 2) {
+		} else if (args.size() == 2) {
 			suggest = null;
 		}
 		return suggest;
 	}
 
 	public Text help(final CommandSource source) {
-		if(source.hasPermission(ECPermissions.REMOVE_OTHERS.get())) {
+		if (source.hasPermission(ECPermissions.REMOVE_OTHERS.get())) {
 			return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_COOLDOWN.get() + "> <" + EAMessages.ARGS_PLAYER.get() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
@@ -77,18 +77,18 @@ public class ECRemove extends ESubCommand<EverCooldowns> {
 	public boolean subExecute(final CommandSource source, final List<String> args) {
 		boolean resultat = false;
 		
-		if(args.size() == 1) {
+		if (args.size() == 1) {
 			// Si la source est un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				resultat = this.commandRemove((EPlayer) source, args.get(0));
 			// La source n'est pas un joueur
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
-		} else if(args.size() == 2) {
+		} else if (args.size() == 2) {
 			Optional<User> optUser = this.plugin.getEServer().getUser(args.get(1));
 			// Le joueur existe
-			if(optUser.isPresent()){
+			if (optUser.isPresent()){
 				resultat = this.commandRemove(source, optUser.get(), args.get(0));
 			// Le joueur est introuvable
 			} else {
@@ -101,7 +101,7 @@ public class ECRemove extends ESubCommand<EverCooldowns> {
 	}
 
 	private boolean commandRemove(final EPlayer player, final String cooldown) {
-		if(player.removeCooldown(cooldown)) {
+		if (player.removeCooldown(cooldown)) {
 			player.sendMessage(EChat.of(ECMessages.PREFIX.get() + ECMessages.REMOVE_EQUALS.get()
 					.replaceAll("<cooldown>", cooldown)));
 		} else {
@@ -112,7 +112,7 @@ public class ECRemove extends ESubCommand<EverCooldowns> {
 	}
 	
 	private boolean commandRemove(final CommandSource staff, final User user, final String cooldown) {
-		if(staff.getIdentifier().equals(user.getIdentifier()) && staff instanceof EPlayer) {
+		if (staff.getIdentifier().equals(user.getIdentifier()) && staff instanceof EPlayer) {
 			return this.commandRemove((EPlayer) staff, cooldown);
 		} else {
 			this.plugin.getThreadAsync().execute(() -> this.commandRemoveAsync(staff, user, cooldown));
@@ -122,15 +122,15 @@ public class ECRemove extends ESubCommand<EverCooldowns> {
 	
 	private void commandRemoveAsync(final CommandSource staff, final User user, final String cooldown) {
 		Optional<CooldownsSubject> optSubject = this.plugin.getService().get(user.getUniqueId());
-		if(optSubject.isPresent()) {
+		if (optSubject.isPresent()) {
 			CooldownsSubject subject = optSubject.get();
-			if(subject.remove(cooldown)) {
+			if (subject.remove(cooldown)) {
 				staff.sendMessage(EChat.of(ECMessages.PREFIX.get() + ECMessages.REMOVE_STAFF.get()
 						.replaceAll("<staff>", staff.getName())
 						.replaceAll("<player>", user.getName())
 						.replaceAll("<cooldown>", cooldown)));
 				Optional<Player> player = user.getPlayer();
-				if(player.isPresent()) {
+				if (player.isPresent()) {
 					player.get().sendMessage(EChat.of(ECMessages.PREFIX.get() + ECMessages.REMOVE_PLAYER.get()
 							.replaceAll("<staff>", staff.getName())
 							.replaceAll("<player>", user.getName())

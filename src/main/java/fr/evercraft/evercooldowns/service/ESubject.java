@@ -154,13 +154,13 @@ public class ESubject implements CooldownsSubject {
 	public void update() {
 		List<String> removes = new ArrayList<String>();
 		long time = System.currentTimeMillis();
-		for(Entry<String, Long> cooldown : this.cooldowns.entrySet()) {
-			if(cooldown.getValue() < time) {
+		for (Entry<String, Long> cooldown : this.cooldowns.entrySet()) {
+			if (cooldown.getValue() < time) {
 				removes.add(cooldown.getKey());
 			}
 		}
 		
-		for(String remove : removes) {
+		for (String remove : removes) {
 			this.remove(remove);
 		}
 	}
@@ -174,7 +174,7 @@ public class ESubject implements CooldownsSubject {
 	@Override
 	public boolean add(final String command) {
 		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(this.identifier);
-		if(player.isPresent()) {
+		if (player.isPresent()) {
 			return this.add(player.get().get(), command);
 		}
 		return false;
@@ -183,10 +183,10 @@ public class ESubject implements CooldownsSubject {
 	@Override
 	public boolean add(final Subject subject, final String command) {
 		Optional<Long> cooldown = this.getCooldown(subject, command);
-		if(cooldown.isPresent()) {
+		if (cooldown.isPresent()) {
 			long time = System.currentTimeMillis() + cooldown.get();
 			
-			if(this.cooldowns.get(command) == null) {
+			if (this.cooldowns.get(command) == null) {
 				this.addDatabase(command, time);
 			} else {
 				this.updateDatabase(command, time);
@@ -200,7 +200,7 @@ public class ESubject implements CooldownsSubject {
 
 	@Override
 	public boolean remove(final String command) {
-		if(this.cooldowns.remove(command) != null) {
+		if (this.cooldowns.remove(command) != null) {
 			this.removeDatabase(command);
 			return true;
 		}
@@ -209,7 +209,7 @@ public class ESubject implements CooldownsSubject {
 	
 	@Override
 	public boolean clear() {
-		if(!this.cooldowns.isEmpty()) {
+		if (!this.cooldowns.isEmpty()) {
 			this.cooldowns.clear();
 			this.clearDatabase();
 			return true;
@@ -220,8 +220,8 @@ public class ESubject implements CooldownsSubject {
 	@Override
 	public Optional<Long> get(final String command) {
 		Long time = this.cooldowns.get(command);
-		if(time != null) {
-			if(time < System.currentTimeMillis()) {
+		if (time != null) {
+			if (time < System.currentTimeMillis()) {
 				this.cooldowns.remove(command);
 				this.removeDatabase(command);
 			} else {
@@ -233,7 +233,7 @@ public class ESubject implements CooldownsSubject {
 	
 	private Optional<Long> getCooldown(final Subject player, final String command) {
 		Long cooldown = this.plugin.getService().getCommands(command).get(player);
-		if(cooldown > 0) {
+		if (cooldown > 0) {
 			return Optional.of(cooldown);
 		}
 		return Optional.empty();

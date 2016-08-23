@@ -60,7 +60,7 @@ public class EValue {
 			}
 		}
 		
-		if(cooldown != null) {
+		if (cooldown != null) {
 			return cooldown;
 		}
 		return this.cooldown_default;

@@ -54,14 +54,14 @@ public class ECList extends ESubCommand<EverCooldowns> {
 	}
 	
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		if(args.size() == 1 && source.hasPermission(ECPermissions.LIST_OTHERS.get())) {
+		if (args.size() == 1 && source.hasPermission(ECPermissions.LIST_OTHERS.get())) {
 			return null;
 		}
 		return new ArrayList<String>();
 	}
 	
 	public Text help(final CommandSource source) {
-		if(source.hasPermission(ECPermissions.LIST_OTHERS.get())) {
+		if (source.hasPermission(ECPermissions.LIST_OTHERS.get())) {
 			return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.get() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
@@ -76,18 +76,18 @@ public class ECList extends ESubCommand<EverCooldowns> {
 	public boolean subExecute(final CommandSource source, final List<String> args) {
 		boolean resultat = false;
 		
-		if(args.size() == 0) {
+		if (args.size() == 0) {
 			// Si la source est un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				resultat = this.commandList((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
-		} else if(args.size() == 1) {
+		} else if (args.size() == 1) {
 			Optional<User> optUser = this.plugin.getEServer().getUser(args.get(0));
 			// Le joueur existe
-			if(optUser.isPresent()){
+			if (optUser.isPresent()){
 				resultat = this.commandList(source, optUser.get());
 			// Le joueur est introuvable
 			} else {
@@ -101,9 +101,9 @@ public class ECList extends ESubCommand<EverCooldowns> {
 
 	private boolean commandList(final EPlayer player) {
 		Map<String, Long> cooldowns = player.getCooldowns();
-		if(!cooldowns.isEmpty()) {
+		if (!cooldowns.isEmpty()) {
 			List<Text> lists = new ArrayList<Text>();
-			if(player.hasPermission(ECPermissions.REMOVE.get())) {
+			if (player.hasPermission(ECPermissions.REMOVE.get())) {
 				for (Entry<String, Long> cooldown : cooldowns.entrySet()) {
 					lists.add(ETextBuilder.toBuilder(ECMessages.LIST_PLAYER_LINE.get()
 							.replaceAll("<cooldown>", cooldown.getKey())
@@ -127,7 +127,7 @@ public class ECList extends ESubCommand<EverCooldowns> {
 	}
 	
 	private boolean commandList(final CommandSource staff, final User user) {
-		if(staff.getIdentifier().equals(user.getIdentifier()) && staff instanceof EPlayer) {
+		if (staff.getIdentifier().equals(user.getIdentifier()) && staff instanceof EPlayer) {
 			return this.commandList((EPlayer) staff);
 		} else {
 			this.plugin.getThreadAsync().execute(() -> this.commandListAsync(staff, user));
@@ -137,12 +137,12 @@ public class ECList extends ESubCommand<EverCooldowns> {
 	
 	private void commandListAsync(final CommandSource staff, final User user) {
 		Optional<CooldownsSubject> optSubject = this.plugin.getService().get(user.getUniqueId());
-		if(optSubject.isPresent()) {
+		if (optSubject.isPresent()) {
 			CooldownsSubject subject = optSubject.get();
 			Map<String, Long> cooldowns = subject.getAll();
-			if(!cooldowns.isEmpty()) {
+			if (!cooldowns.isEmpty()) {
 				List<Text> lists = new ArrayList<Text>();
-				if(staff.hasPermission(ECPermissions.REMOVE.get()) && staff.hasPermission(ECPermissions.REMOVE_OTHERS.get())) {
+				if (staff.hasPermission(ECPermissions.REMOVE.get()) && staff.hasPermission(ECPermissions.REMOVE_OTHERS.get())) {
 					for (Entry<String, Long> cooldown : cooldowns.entrySet()) {
 						lists.add(ETextBuilder.toBuilder(ECMessages.LIST_STAFF_LINE.get()
 								.replaceAll("<cooldown>", cooldown.getKey())

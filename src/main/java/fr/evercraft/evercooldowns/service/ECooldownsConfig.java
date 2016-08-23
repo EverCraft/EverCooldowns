@@ -39,7 +39,7 @@ public class ECooldownsConfig extends EConfig {
 	
 	@Override
 	public void loadDefault() {
-		if(this.getNode().getValue() == null) {
+		if (this.getNode().getValue() == null) {
 			// Heal
 			CommentedConfigurationNode heal_config = this.get("heal_group");
 			heal_config.getNode("commands").setValue(Arrays.asList("heal", "food"));
@@ -82,22 +82,22 @@ public class ECooldownsConfig extends EConfig {
 		Map<String, EValue> commands = new HashMap<String, EValue>();
 		
 		for (Entry<Object, ? extends ConfigurationNode> command : this.getNode().getChildrenMap().entrySet()) {
-			if(command.getKey() instanceof String) {
+			if (command.getKey() instanceof String) {
 				String group = (String) command.getKey();
 				ConfigurationNode config_commands = command.getValue().getNode("commands");
 				ConfigurationNode config_command = command.getValue().getNode("command");
 				ConfigurationNode config_permissions = command.getValue().getNode("permissions");
 				
 				// Goupe
-				if((!config_commands.isVirtual() || !config_command.isVirtual()) && !config_permissions.isVirtual()) {
+				if ((!config_commands.isVirtual() || !config_command.isVirtual()) && !config_permissions.isVirtual()) {
 					Map<String, Long> cooldowns = new HashMap<String, Long>();
 					// Liste des permissions
 					for (Entry<Object, ? extends ConfigurationNode> cooldown : config_permissions.getChildrenMap().entrySet()) {
-						if(cooldown.getKey() instanceof String) {
+						if (cooldown.getKey() instanceof String) {
 							String permission = (String) cooldown.getKey();
-							if(!permission.equalsIgnoreCase(CooldownsService.NAME_DEFAULT)) {
+							if (!permission.equalsIgnoreCase(CooldownsService.NAME_DEFAULT)) {
 								long value = cooldown.getValue().getLong(-1L);
-								if(value >= 0) {
+								if (value >= 0) {
 									cooldowns.put((String) cooldown.getKey(), value*1000);
 								} else {
 									this.plugin.getLogger().warn("The value of the cooldown is invalid : (group='" + group + "';permission='" + permission + "';value='" + value + "')");
@@ -109,10 +109,10 @@ public class ECooldownsConfig extends EConfig {
 					}
 					
 					EValue value = new EValue(config_permissions.getNode(CooldownsService.NAME_DEFAULT).getLong(0)*1000, UtilsMap.valueLinkedASC(cooldowns));
-					if(config_commands.isVirtual()) {
+					if (config_commands.isVirtual()) {
 						String name = config_command.getString("");
-						if(!name.isEmpty()) {
-							if(!commands.containsKey(name)) {
+						if (!name.isEmpty()) {
+							if (!commands.containsKey(name)) {
 								commands.put(name, value);
 							} else {
 								this.plugin.getLogger().warn("The name is already used : (group='" + group + "';name='" + name + "')");
@@ -122,9 +122,9 @@ public class ECooldownsConfig extends EConfig {
 						}
 					} else {
 						try {
-							for(String name : config_commands.getList(TypeToken.of(String.class))) {
-								if(!name.isEmpty()) {
-									if(!commands.containsKey(name)) {
+							for (String name : config_commands.getList(TypeToken.of(String.class))) {
+								if (!name.isEmpty()) {
+									if (!commands.containsKey(name)) {
 										commands.put(name, value);
 									} else {
 										this.plugin.getLogger().warn("The name is already used : (group='" + group + "';name='" + name + "')");
@@ -143,11 +143,11 @@ public class ECooldownsConfig extends EConfig {
 					Map<String, Long> cooldowns = new HashMap<String, Long>();
 					// Liste des permissions
 					for (Entry<Object, ? extends ConfigurationNode> cooldown : command.getValue().getChildrenMap().entrySet()) {
-						if(cooldown.getKey() instanceof String) {
+						if (cooldown.getKey() instanceof String) {
 							String permission = (String) cooldown.getKey();
-							if(!permission.equalsIgnoreCase(CooldownsService.NAME_DEFAULT)) {
+							if (!permission.equalsIgnoreCase(CooldownsService.NAME_DEFAULT)) {
 								long value = cooldown.getValue().getLong(-1L);
-								if(value >= 0) {
+								if (value >= 0) {
 									cooldowns.put((String) cooldown.getKey(), value*1000);
 								} else {
 									this.plugin.getLogger().warn("The value of the cooldown is invalid : (name='" + group + "';permission='" + permission + "';value='" + value + "')");
@@ -158,7 +158,7 @@ public class ECooldownsConfig extends EConfig {
 						}
 					}
 					
-					if(!commands.containsKey(group)) {
+					if (!commands.containsKey(group)) {
 						commands.put(group, new EValue(command.getValue().getNode(CooldownsService.NAME_DEFAULT).getLong(0)*1000, UtilsMap.valueLinkedASC(cooldowns)));
 					} else {
 						this.plugin.getLogger().warn("The name is already used : (name='" + group + "')");

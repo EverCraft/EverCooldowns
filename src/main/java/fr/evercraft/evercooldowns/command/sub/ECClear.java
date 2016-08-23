@@ -52,14 +52,14 @@ public class ECClear extends ESubCommand<EverCooldowns> {
 	}
 	
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
-		if(args.size() == 1 && source.hasPermission(ECPermissions.CLEAR_OTHERS.get())) {
+		if (args.size() == 1 && source.hasPermission(ECPermissions.CLEAR_OTHERS.get())) {
 			return null;
 		}
 		return new ArrayList<String>();
 	}
 
 	public Text help(final CommandSource source) {
-		if(source.hasPermission(ECPermissions.CLEAR_OTHERS.get())) {
+		if (source.hasPermission(ECPermissions.CLEAR_OTHERS.get())) {
 			return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.get() + "|*>")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
@@ -74,22 +74,22 @@ public class ECClear extends ESubCommand<EverCooldowns> {
 	public boolean subExecute(final CommandSource source, final List<String> args) {
 		boolean resultat = false;
 		
-		if(args.size() == 0) {
+		if (args.size() == 0) {
 			// Si la source est un joueur
-			if(source instanceof EPlayer) {
+			if (source instanceof EPlayer) {
 				resultat = this.commandClear((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
 			}
-		} else if(args.size() == 1) {
-			if(source.hasPermission(ECPermissions.CLEAR_OTHERS.get())) {
-				if(args.get(0).equalsIgnoreCase("*") || args.get(0).equalsIgnoreCase("all")) {
+		} else if (args.size() == 1) {
+			if (source.hasPermission(ECPermissions.CLEAR_OTHERS.get())) {
+				if (args.get(0).equalsIgnoreCase("*") || args.get(0).equalsIgnoreCase("all")) {
 					resultat = this.commandClearAll(source);
 				} else {
 					Optional<User> optUser = this.plugin.getEServer().getUser(args.get(0));
 					// Le joueur existe
-					if(optUser.isPresent()){
+					if (optUser.isPresent()){
 						resultat = this.commandClear(source, optUser.get());
 					// Le joueur est introuvable
 					} else {
@@ -106,7 +106,7 @@ public class ECClear extends ESubCommand<EverCooldowns> {
 	}
 
 	private boolean commandClear(final EPlayer player) {
-		if(player.clearCooldown()) {
+		if (player.clearCooldown()) {
 			player.sendMessage(ECMessages.PREFIX.getText().concat(ECMessages.CLEAR_EQUALS.getText()));
 		} else {
 			player.sendMessage(ECMessages.PREFIX.getText().concat(ECMessages.CLEAR_ERROR_PLAYER.getText()));
@@ -121,7 +121,7 @@ public class ECClear extends ESubCommand<EverCooldowns> {
 	}
 	
 	private boolean commandClear(final CommandSource staff, final User user) {
-		if(staff.getIdentifier().equals(user.getIdentifier()) && staff instanceof EPlayer) {
+		if (staff.getIdentifier().equals(user.getIdentifier()) && staff instanceof EPlayer) {
 			return this.commandClear((EPlayer) staff);
 		} else {
 			this.plugin.getThreadAsync().execute(() -> this.commandClearAsync(staff, user));
@@ -131,14 +131,14 @@ public class ECClear extends ESubCommand<EverCooldowns> {
 	
 	private void commandClearAsync(final CommandSource staff, final User user) {
 		Optional<CooldownsSubject> optSubject = this.plugin.getService().get(user.getUniqueId());
-		if(optSubject.isPresent()) {
+		if (optSubject.isPresent()) {
 			CooldownsSubject subject = optSubject.get();
-			if(subject.clear()) {
+			if (subject.clear()) {
 				staff.sendMessage(EChat.of(ECMessages.PREFIX.get() + ECMessages.CLEAR_STAFF.get()
 						.replaceAll("<staff>", staff.getName())
 						.replaceAll("<player>", user.getName())));
 				Optional<Player> player = user.getPlayer();
-				if(player.isPresent()) {
+				if (player.isPresent()) {
 					player.get().sendMessage(EChat.of(ECMessages.PREFIX.get() + ECMessages.CLEAR_PLAYER.get()
 							.replaceAll("<staff>", staff.getName())
 							.replaceAll("<player>", user.getName())));
