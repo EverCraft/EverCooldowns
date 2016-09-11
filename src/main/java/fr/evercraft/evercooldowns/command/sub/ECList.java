@@ -107,7 +107,7 @@ public class ECList extends ESubCommand<EverCooldowns> {
 				for (Entry<String, Long> cooldown : cooldowns.entrySet()) {
 					lists.add(ETextBuilder.toBuilder(ECMessages.LIST_PLAYER_LINE.get()
 							.replaceAll("<cooldown>", cooldown.getKey())
-							.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(cooldown.getValue())))
+							.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(cooldown.getValue())))
 						.replace("<delete>", this.getButtonDelete(player, cooldown.getKey()))
 						.build());
 				}
@@ -115,7 +115,7 @@ public class ECList extends ESubCommand<EverCooldowns> {
 				for (Entry<String, Long> cooldown : cooldowns.entrySet()) {
 					lists.add(EChat.of(ECMessages.LIST_PLAYER_LINE.get()
 							.replaceAll("<cooldown>", cooldown.getKey())
-							.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(cooldown.getValue()))));
+							.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(cooldown.getValue()))));
 				}
 			}
 			this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(ECMessages.LIST_PLAYER_TITLE.getText().toBuilder()
@@ -146,7 +146,7 @@ public class ECList extends ESubCommand<EverCooldowns> {
 					for (Entry<String, Long> cooldown : cooldowns.entrySet()) {
 						lists.add(ETextBuilder.toBuilder(ECMessages.LIST_STAFF_LINE.get()
 								.replaceAll("<cooldown>", cooldown.getKey())
-								.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(cooldown.getValue())))
+								.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(cooldown.getValue())))
 							.replace("<delete>", this.getButtonDeleteOthers(user, cooldown.getKey()))
 							.build());
 					}
@@ -154,7 +154,7 @@ public class ECList extends ESubCommand<EverCooldowns> {
 					for (Entry<String, Long> cooldown : cooldowns.entrySet()) {
 						lists.add(EChat.of(ECMessages.LIST_STAFF_LINE.get()
 								.replaceAll("<cooldown>", cooldown.getKey())
-								.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDateDiff(cooldown.getValue()))));
+								.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(cooldown.getValue()))));
 					}
 				}
 				this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(ECMessages.LIST_STAFF_TITLE.getText().toBuilder()
