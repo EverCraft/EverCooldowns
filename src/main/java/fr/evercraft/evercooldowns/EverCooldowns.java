@@ -19,6 +19,7 @@ package fr.evercraft.evercooldowns;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 
+import fr.evercraft.everapi.EverAPI;
 import fr.evercraft.everapi.exception.PluginDisableException;
 import fr.evercraft.everapi.plugin.EPlugin;
 import fr.evercraft.everapi.services.cooldown.CooldownsService;
@@ -28,14 +29,14 @@ import fr.evercraft.evercooldowns.command.sub.ECReload;
 import fr.evercraft.evercooldowns.command.sub.ECRemove;
 import fr.evercraft.evercooldowns.service.ECooldownsService;
 
-@Plugin(id = "fr.evercraft.evercooldowns", 
+@Plugin(id = "evercooldowns", 
 		name = "EverCooldowns", 
-		version = "1.2", 
+		version = EverAPI.VERSION, 
 		description = "Cooldowns",
 		url = "http://evercraft.fr/",
 		authors = {"rexbut"},
 		dependencies = {
-		    @Dependency(id = "fr.evercraft.everapi", version = "1.2")
+		    @Dependency(id = "everapi", version = EverAPI.VERSION)
 		})
 public class EverCooldowns extends EPlugin {
 	private ECConfig configs;
