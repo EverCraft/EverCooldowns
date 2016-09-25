@@ -36,7 +36,8 @@ import fr.evercraft.evercooldowns.service.ECooldownsService;
 		url = "http://evercraft.fr/",
 		authors = {"rexbut"},
 		dependencies = {
-		    @Dependency(id = "everapi", version = EverAPI.VERSION)
+		    @Dependency(id = "everapi", version = EverAPI.VERSION),
+		    @Dependency(id = "spongeapi", version = EverAPI.SPONGEAPI_VERSION)
 		})
 public class EverCooldowns extends EPlugin {
 	private ECConfig configs;
