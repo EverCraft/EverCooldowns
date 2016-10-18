@@ -19,7 +19,7 @@ package fr.evercraft.evercooldowns;
 import fr.evercraft.everapi.plugin.file.EConfig;
 import fr.evercraft.everapi.plugin.file.EMessage;
 
-public class ECConfig extends EConfig {
+public class ECConfig extends EConfig<EverCooldowns> {
 
 	public ECConfig(final EverCooldowns plugin) {
 		super(plugin);

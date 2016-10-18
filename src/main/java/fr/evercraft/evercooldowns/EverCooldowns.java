@@ -39,7 +39,7 @@ import fr.evercraft.evercooldowns.service.ECooldownsService;
 		    @Dependency(id = "everapi", version = EverAPI.VERSION),
 		    @Dependency(id = "spongeapi", version = EverAPI.SPONGEAPI_VERSION)
 		})
-public class EverCooldowns extends EPlugin {
+public class EverCooldowns extends EPlugin<EverCooldowns> {
 	private ECConfig configs;
 	private ECMessage messages;
 	private ECDataBase databases;

@@ -31,7 +31,7 @@ import fr.evercraft.everapi.plugin.file.EConfig;
 import fr.evercraft.everapi.services.cooldown.CooldownsService;
 import fr.evercraft.evercooldowns.EverCooldowns;
 
-public class ECooldownsConfig extends EConfig {
+public class ECooldownsConfig extends EConfig<EverCooldowns> {
 
 	public ECooldownsConfig(final EverCooldowns plugin) {
 		super(plugin, "cooldowns");

@@ -28,7 +28,7 @@ import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.file.EMessage;
 import fr.evercraft.everapi.plugin.file.EnumMessage;
 
-public class ECMessage extends EMessage {
+public class ECMessage extends EMessage<EverCooldowns> {
 
 	public ECMessage(final EverCooldowns plugin) {
 		super(plugin, ECMessages.values());
