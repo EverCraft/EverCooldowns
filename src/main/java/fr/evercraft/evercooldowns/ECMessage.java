@@ -18,6 +18,7 @@ package fr.evercraft.evercooldowns;
 
 import com.google.common.base.Preconditions;
 
+import fr.evercraft.everapi.message.EMessageBuilder;
 import fr.evercraft.everapi.message.EMessageFormat;
 import fr.evercraft.everapi.message.format.EFormatString;
 import fr.evercraft.everapi.plugin.file.EMessage;
@@ -65,33 +66,31 @@ public class ECMessage extends EMessage<EverCooldowns> {
 		REMOVE_ERROR_PLAYER("remove.errorEquals", "&cVous n'avez pas cooldown &6<cooldown>&7.");
 		
 		private final String path;
-	    private final EMessageFormat french;
-	    private final EMessageFormat english;
+	    private final EMessageBuilder french;
+	    private final EMessageBuilder english;
 	    private EMessageFormat message;
 	    
 	    private ECMessages(final String path, final String french) {   	
-	    	this(path, 
-	    		EMessageFormat.builder().chat(new EFormatString(french), true).build(), 
-	    		EMessageFormat.builder().chat(new EFormatString(french), true).build());
+	    	this(path, EMessageFormat.builder().chat(new EFormatString(french), true));
 	    }
 	    
 	    private ECMessages(final String path, final String french, final String english) {   	
 	    	this(path, 
-	    		EMessageFormat.builder().chat(new EFormatString(french), true).build(), 
-	    		EMessageFormat.builder().chat(new EFormatString(english), true).build());
+	    		EMessageFormat.builder().chat(new EFormatString(french), true), 
+	    		EMessageFormat.builder().chat(new EFormatString(english), true));
 	    }
 	    
-	    private ECMessages(final String path, final EMessageFormat french) {   	
+	    private ECMessages(final String path, final EMessageBuilder french) {   	
 	    	this(path, french, french);
 	    }
 	    
-	    private ECMessages(final String path, final EMessageFormat french, final EMessageFormat english) {
+	    private ECMessages(final String path, final EMessageBuilder french, final EMessageBuilder english) {
 	    	Preconditions.checkNotNull(french, "Le message '" + this.name() + "' n'est pas définit");
 	    	
 	    	this.path = path;	    	
 	    	this.french = french;
 	    	this.english = english;
-	    	this.message = french;
+	    	this.message = french.build();
 	    }
 
 	    public String getName() {
@@ -102,11 +101,11 @@ public class ECMessage extends EMessage<EverCooldowns> {
 			return this.path;
 		}
 
-		public Object getFrench() {
+		public EMessageBuilder getFrench() {
 			return this.french;
 		}
 
-		public Object getEnglish() {
+		public EMessageBuilder getEnglish() {
 			return this.english;
 		}
 		
