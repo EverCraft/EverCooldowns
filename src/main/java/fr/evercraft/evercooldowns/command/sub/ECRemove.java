@@ -22,14 +22,12 @@ import java.util.Optional;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.services.cooldown.CooldownsSubject;
@@ -54,7 +52,7 @@ public class ECRemove extends ESubCommand<EverCooldowns> {
 	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggest = new ArrayList<String>();
 		if (args.size() == 1) {
-			suggest.add(EAMessages.ARGS_COOLDOWN.get());
+			suggest.add(EAMessages.ARGS_COOLDOWN.getString());
 		} else if (args.size() == 2) {
 			suggest = null;
 		}
@@ -63,12 +61,12 @@ public class ECRemove extends ESubCommand<EverCooldowns> {
 
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(ECPermissions.REMOVE_OTHERS.get())) {
-			return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_COOLDOWN.get() + "> <" + EAMessages.ARGS_PLAYER.get() + ">")
+			return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_COOLDOWN.getString() + "> <" + EAMessages.ARGS_PLAYER.getString() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
 		} 
-		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_COOLDOWN.get() + ">")
+		return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_COOLDOWN.getString() + ">")
 				.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 				.color(TextColors.RED)
 				.build();
@@ -92,7 +90,9 @@ public class ECRemove extends ESubCommand<EverCooldowns> {
 				resultat = this.commandRemove(source, optUser.get(), args.get(0));
 			// Le joueur est introuvable
 			} else {
-				source.sendMessage(EChat.of(ECMessages.PREFIX.get() + EAMessages.PLAYER_NOT_FOUND.get()));
+				EAMessages.PLAYER_NOT_FOUND.sender()
+					.prefix(ECMessages.PREFIX)
+					.sendTo(source);
 			}
 		} else {
 			source.sendMessage(this.help(source));
@@ -102,11 +102,13 @@ public class ECRemove extends ESubCommand<EverCooldowns> {
 
 	private boolean commandRemove(final EPlayer player, final String cooldown) {
 		if (player.removeCooldown(cooldown)) {
-			player.sendMessage(EChat.of(ECMessages.PREFIX.get() + ECMessages.REMOVE_EQUALS.get()
-					.replaceAll("<cooldown>", cooldown)));
+			ECMessages.REMOVE_EQUALS.sender()
+				.replace("<cooldown>", cooldown)
+				.sendTo(player);
 		} else {
-			player.sendMessage(EChat.of(ECMessages.PREFIX.get() + ECMessages.REMOVE_ERROR_PLAYER.get()
-					.replaceAll("<cooldown>", cooldown)));
+			ECMessages.REMOVE_ERROR_PLAYER.sender()
+				.replace("<cooldown>", cooldown)
+				.sendTo(player);
 		}
 		return true;
 	}
@@ -125,25 +127,27 @@ public class ECRemove extends ESubCommand<EverCooldowns> {
 		if (optSubject.isPresent()) {
 			CooldownsSubject subject = optSubject.get();
 			if (subject.remove(cooldown)) {
-				staff.sendMessage(EChat.of(ECMessages.PREFIX.get() + ECMessages.REMOVE_STAFF.get()
-						.replaceAll("<staff>", staff.getName())
-						.replaceAll("<player>", user.getName())
-						.replaceAll("<cooldown>", cooldown)));
-				Optional<Player> player = user.getPlayer();
-				if (player.isPresent()) {
-					player.get().sendMessage(EChat.of(ECMessages.PREFIX.get() + ECMessages.REMOVE_PLAYER.get()
-							.replaceAll("<staff>", staff.getName())
-							.replaceAll("<player>", user.getName())
-							.replaceAll("<cooldown>", cooldown)));
-				}
+				ECMessages.REMOVE_ERROR_PLAYER.sender()
+					.replace("<staff>", staff.getName())
+					.replace("<player>", user.getName())
+					.replace("<cooldown>", cooldown)
+					.sendTo(staff);
+				user.getPlayer().ifPresent(player -> ECMessages.REMOVE_PLAYER.sender()
+						.replace("<staff>", staff.getName())
+						.replace("<player>", user.getName())
+						.replace("<cooldown>", cooldown)
+						.sendTo(player));
 			} else {
-				staff.sendMessage(EChat.of(ECMessages.PREFIX.get() + ECMessages.REMOVE_ERROR_STAFF.get()
-						.replaceAll("<staff>", staff.getName())
-						.replaceAll("<player>", user.getName())
-						.replaceAll("<cooldown>", cooldown)));
+				ECMessages.REMOVE_ERROR_STAFF.sender()
+					.replace("<staff>", staff.getName())
+					.replace("<player>", user.getName())
+					.replace("<cooldown>", cooldown)
+					.sendTo(staff);
 			}
 		} else {
-			staff.sendMessage(EChat.of(ECMessages.PREFIX.get() + EAMessages.PLAYER_NOT_FOUND.get()));
+			EAMessages.PLAYER_NOT_FOUND.sender()
+				.prefix(ECMessages.PREFIX)
+				.sendTo(staff);
 		}
 	}
 }

@@ -30,11 +30,9 @@ import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
 import fr.evercraft.everapi.EAMessage.EAMessages;
-import fr.evercraft.everapi.plugin.EChat;
 import fr.evercraft.everapi.plugin.command.ESubCommand;
 import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.services.cooldown.CooldownsSubject;
-import fr.evercraft.everapi.text.ETextBuilder;
 import fr.evercraft.evercooldowns.ECCommand;
 import fr.evercraft.evercooldowns.ECMessage.ECMessages;
 import fr.evercraft.evercooldowns.ECPermissions;
@@ -62,7 +60,7 @@ public class ECList extends ESubCommand<EverCooldowns> {
 	
 	public Text help(final CommandSource source) {
 		if (source.hasPermission(ECPermissions.LIST_OTHERS.get())) {
-			return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.get() + ">")
+			return Text.builder("/" + this.getName() + " <" + EAMessages.ARGS_PLAYER.getString() + ">")
 					.onClick(TextActions.suggestCommand("/" + this.getName() + " "))
 					.color(TextColors.RED)
 					.build();
@@ -82,7 +80,7 @@ public class ECList extends ESubCommand<EverCooldowns> {
 				resultat = this.commandList((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
-				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
+				EAMessages.COMMAND_ERROR_FOR_PLAYER.sendTo(source);
 			}
 		} else if (args.size() == 1) {
 			Optional<User> optUser = this.plugin.getEServer().getUser(args.get(0));
@@ -91,7 +89,9 @@ public class ECList extends ESubCommand<EverCooldowns> {
 				resultat = this.commandList(source, optUser.get());
 			// Le joueur est introuvable
 			} else {
-				source.sendMessage(EChat.of(ECMessages.PREFIX.get() + EAMessages.PLAYER_NOT_FOUND.get()));
+				EAMessages.PLAYER_NOT_FOUND.sender()
+					.prefix(ECMessages.PREFIX)
+					.sendTo(source);
 			}
 		} else {
 			source.sendMessage(this.help(source));
@@ -105,23 +105,22 @@ public class ECList extends ESubCommand<EverCooldowns> {
 			List<Text> lists = new ArrayList<Text>();
 			if (player.hasPermission(ECPermissions.REMOVE.get())) {
 				for (Entry<String, Long> cooldown : cooldowns.entrySet()) {
-					lists.add(ETextBuilder.toBuilder(ECMessages.LIST_PLAYER_LINE.get()
-							.replaceAll("<cooldown>", cooldown.getKey())
-							.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(cooldown.getValue())))
-						.replace("<delete>", this.getButtonDelete(player, cooldown.getKey()))
-						.build());
+					lists.add(ECMessages.LIST_PLAYER_LINE.getFormat()
+							.toText("<cooldown>", () -> cooldown.getKey(), 
+									"<time>", () -> this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(cooldown.getValue()),
+									"<delete>", () -> this.getButtonDelete(player, cooldown.getKey())));
 				}
 			} else {
 				for (Entry<String, Long> cooldown : cooldowns.entrySet()) {
-					lists.add(EChat.of(ECMessages.LIST_PLAYER_LINE.get()
-							.replaceAll("<cooldown>", cooldown.getKey())
-							.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(cooldown.getValue()))));
+					lists.add(ECMessages.LIST_PLAYER_LINE.getFormat()
+							.toText("<cooldown>", () -> cooldown.getKey(),
+									"<time>", () -> this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(cooldown.getValue())));
 				}
 			}
 			this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(ECMessages.LIST_PLAYER_TITLE.getText().toBuilder()
 					.onClick(TextActions.runCommand(this.getName())).build(), lists, player);
 		} else {
-			player.sendMessage(ECMessages.PREFIX.getText().concat(ECMessages.LIST_PLAYER_EMPTY.getText()));
+			ECMessages.LIST_PLAYER_EMPTY.sendTo(player);
 		}
 		return false;
 	}
@@ -144,45 +143,47 @@ public class ECList extends ESubCommand<EverCooldowns> {
 				List<Text> lists = new ArrayList<Text>();
 				if (staff.hasPermission(ECPermissions.REMOVE.get()) && staff.hasPermission(ECPermissions.REMOVE_OTHERS.get())) {
 					for (Entry<String, Long> cooldown : cooldowns.entrySet()) {
-						lists.add(ETextBuilder.toBuilder(ECMessages.LIST_STAFF_LINE.get()
-								.replaceAll("<cooldown>", cooldown.getKey())
-								.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(cooldown.getValue())))
-							.replace("<delete>", this.getButtonDeleteOthers(user, cooldown.getKey()))
-							.build());
+						lists.add(ECMessages.LIST_STAFF_LINE.getFormat()
+								.toText("<cooldown>", () -> cooldown.getKey(),
+										"<time>", () -> this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(cooldown.getValue()),
+										"<delete>", () -> this.getButtonDeleteOthers(user, cooldown.getKey())));
 					}
 				} else {
 					for (Entry<String, Long> cooldown : cooldowns.entrySet()) {
-						lists.add(EChat.of(ECMessages.LIST_STAFF_LINE.get()
-								.replaceAll("<cooldown>", cooldown.getKey())
-								.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(cooldown.getValue()))));
+						lists.add(ECMessages.LIST_STAFF_LINE.getFormat()
+								.toText("<cooldown>", () -> cooldown.getKey(),
+										"<time>", () -> this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(cooldown.getValue())));
 					}
 				}
 				this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(ECMessages.LIST_STAFF_TITLE.getText().toBuilder()
 						.onClick(TextActions.runCommand(this.getName())).build(), lists, staff);
 			} else {
-				staff.sendMessage(EChat.of(ECMessages.PREFIX.get() + ECMessages.LIST_STAFF_EMPTY.get()
-						.replaceAll("<staff>", staff.getName())
-						.replaceAll("<player>", user.getName())));
+				ECMessages.LIST_STAFF_EMPTY.sender()
+					.replace("<staff>", staff.getName())
+					.replace("<player>", user.getName())
+					.sendTo(staff);
 			}
 		} else {
-			staff.sendMessage(EChat.of(ECMessages.PREFIX.get() + EAMessages.PLAYER_NOT_FOUND.get()));
+			EAMessages.PLAYER_NOT_FOUND.sender()
+				.prefix(ECMessages.PREFIX)
+				.sendTo(staff);
 		}
 	}
 	
 	public Text getButtonDelete(final EPlayer player, final String cooldown){
 		return ECMessages.LIST_PLAYER_DELETE.getText().toBuilder()
-					.onHover(TextActions.showText(EChat.of(ECMessages.LIST_PLAYER_DELETE_HOVER.get()
-							.replaceAll("<player>", player.getName())
-							.replaceAll("<cooldown>", cooldown))))
+					.onHover(TextActions.showText(ECMessages.LIST_PLAYER_DELETE_HOVER.getFormat()
+							.toText("<player>", player.getName(),
+									"<cooldown>", cooldown)))
 					.onClick(TextActions.runCommand("/" + this.getParentName() + " remove " + cooldown))
 					.build();
 	}
 	
 	public Text getButtonDeleteOthers(final User player, final String cooldown){
 		return ECMessages.LIST_STAFF_DELETE.getText().toBuilder()
-					.onHover(TextActions.showText(EChat.of(ECMessages.LIST_STAFF_DELETE_HOVER.get()
-							.replaceAll("<player>", player.getName())
-							.replaceAll("<cooldown>", cooldown))))
+					.onHover(TextActions.showText(ECMessages.LIST_STAFF_DELETE_HOVER.getFormat()
+							.toText("<player>", player.getName(),
+									"<cooldown>", cooldown)))
 					.onClick(TextActions.runCommand("/" + this.getParentName() + " remove " + cooldown + " " + player.getName()))
 					.build();
 	}

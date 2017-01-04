@@ -64,8 +64,9 @@ public class ECListener {
         	Optional<Long> cooldown = event.getPlayer().getCooldown(event.getCommand());
         	if (cooldown.isPresent()) {
         		event.setCancelled(true);
-        		event.getPlayer().sendMessage(event.getPlayer().replaceVariable(ECMessages.PREFIX.get() + ECMessages.COOLDOWN.get()
-        				.replaceAll("<time>", this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(cooldown.get()))));
+        		ECMessages.COOLDOWN.sender()
+        			.replace("<time>", () -> this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(cooldown.get()))
+        			.replace(event.getPlayer().getReplacesAll());
         	}
         }
     }
