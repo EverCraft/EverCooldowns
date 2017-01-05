@@ -97,7 +97,9 @@ public class ECClear extends ESubCommand<EverCooldowns> {
 					}
 				}
 			} else {
-				source.sendMessage(EAMessages.NO_PERMISSION.getText());
+				EAMessages.NO_PERMISSION.sender()
+					.prefix(ECMessages.PREFIX)
+					.sendTo(source);
 			}
 		} else {
 			source.sendMessage(this.help(source));
