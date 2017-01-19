@@ -32,9 +32,9 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
-import fr.evercraft.everapi.java.Chronometer;
 import fr.evercraft.everapi.services.cooldown.CooldownsService;
 import fr.evercraft.everapi.services.cooldown.CooldownsSubject;
+import fr.evercraft.everapi.util.Chronometer;
 import fr.evercraft.evercooldowns.EverCooldowns;
 
 public class ECooldownsService implements CooldownsService {
