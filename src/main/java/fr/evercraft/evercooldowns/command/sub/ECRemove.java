@@ -17,6 +17,7 @@
 package fr.evercraft.evercooldowns.command.sub;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,7 +50,7 @@ public class ECRemove extends ESubCommand<EverCooldowns> {
 		return ECMessages.REMOVE_DESCRIPTION.getText();
 	}
 	
-	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		List<String> suggest = new ArrayList<String>();
 		if (args.size() == 1) {
 			suggest.add(EAMessages.ARGS_COOLDOWN.getString());

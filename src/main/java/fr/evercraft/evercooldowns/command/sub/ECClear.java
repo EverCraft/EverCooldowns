@@ -17,6 +17,7 @@
 package fr.evercraft.evercooldowns.command.sub;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,7 +50,7 @@ public class ECClear extends ESubCommand<EverCooldowns> {
 		return ECMessages.CLEAR_DESCRIPTION.getText();
 	}
 	
-	public List<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1 && source.hasPermission(ECPermissions.CLEAR_OTHERS.get())) {
 			return null;
 		}
