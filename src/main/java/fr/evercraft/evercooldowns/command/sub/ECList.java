@@ -17,6 +17,7 @@
 package fr.evercraft.evercooldowns.command.sub;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -54,9 +55,9 @@ public class ECList extends ESubCommand<EverCooldowns> {
 	
 	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1 && source.hasPermission(ECPermissions.LIST_OTHERS.get())) {
-			return null;
+			return this.getAllPlayers(source, true);
 		}
-		return new ArrayList<String>();
+		return Arrays.asList();
 	}
 	
 	public Text help(final CommandSource source) {
