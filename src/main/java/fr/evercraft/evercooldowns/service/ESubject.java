@@ -29,13 +29,13 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.service.permission.Subject;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 
 import fr.evercraft.everapi.exception.ServerDisableException;
-import fr.evercraft.everapi.server.player.EPlayer;
 import fr.evercraft.everapi.services.cooldown.CooldownsSubject;
 import fr.evercraft.evercooldowns.EverCooldowns;
 
@@ -173,9 +173,9 @@ public class ESubject implements CooldownsSubject {
 	
 	@Override
 	public boolean add(final String command) {
-		Optional<EPlayer> player = this.plugin.getEServer().getEPlayer(this.identifier);
+		Optional<Player> player = this.plugin.getEServer().getPlayer(this.identifier);
 		if (player.isPresent()) {
-			return this.add(player.get().get(), command);
+			return this.add(player.get(), command);
 		}
 		return false;
 	}
