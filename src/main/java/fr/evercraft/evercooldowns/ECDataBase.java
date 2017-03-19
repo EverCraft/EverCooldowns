@@ -58,9 +58,9 @@ public class ECDataBase extends EDataBase<EverCooldowns> {
 							+ "WHERE time < NOW();";
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.execute();
-			this.plugin.getLogger().info("Deletions of expired cooldowns");
+			this.plugin.getELogger().info("Deletions of expired cooldowns");
 		} catch (SQLException e) {
-	    	this.plugin.getLogger().warn("Error deletion of expired cooldowns : " + e.getMessage());
+	    	this.plugin.getELogger().warn("Error deletion of expired cooldowns : " + e.getMessage());
 		} catch (ServerDisableException e) {
 			e.execute();
 		} finally {
@@ -79,9 +79,9 @@ public class ECDataBase extends EDataBase<EverCooldowns> {
 			String query = 	  "TRUNCATE " + this.plugin.getDataBases().getTablePlayer() + " ;";
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.execute();
-			this.plugin.getLogger().info("Deletions from the database");
+			this.plugin.getELogger().info("Deletions from the database");
 		} catch (SQLException e) {
-	    	this.plugin.getLogger().warn("Error deletions from the database : " + e.getMessage());
+	    	this.plugin.getELogger().warn("Error deletions from the database : " + e.getMessage());
 		} catch (ServerDisableException e) {
 			e.execute();
 		} finally {

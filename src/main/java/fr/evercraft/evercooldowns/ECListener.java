@@ -66,7 +66,7 @@ public class ECListener {
         		event.setCancelled(true);
         		ECMessages.COOLDOWN.sender()
         			.replace("<time>", () -> this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(cooldown.get()))
-        			.replace(event.getPlayer().getReplacesAll());
+        			.replace(event.getPlayer().getReplaces());
         	}
         }
     }

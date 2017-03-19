@@ -95,7 +95,7 @@ public class ESubject implements CooldownsSubject {
 			preparedStatement.setString(1, this.identifier.toString());
 			preparedStatement.execute();
 		} catch (SQLException e) {
-			this.plugin.getLogger().warn("Error while loading data (uuid='" + this.identifier + "') : " + e.getMessage());
+			this.plugin.getELogger().warn("Error while loading data (uuid='" + this.identifier + "') : " + e.getMessage());
 		} finally {
 			try {
 				if (preparedStatement != null) {
@@ -141,7 +141,7 @@ public class ESubject implements CooldownsSubject {
 				this.cooldowns.put(result.getString("command"), result.getTimestamp("time").getTime());
 			}
 		} catch (SQLException e) {
-			this.plugin.getLogger().warn("Error while loading data (uuid='" + this.identifier + "') : " + e.getMessage());
+			this.plugin.getELogger().warn("Error while loading data (uuid='" + this.identifier + "') : " + e.getMessage());
 		} finally {
 			try {
 				if (preparedStatement != null) {
@@ -270,11 +270,11 @@ public class ESubject implements CooldownsSubject {
 			preparedStatement.setString(2, command);
 			preparedStatement.setTimestamp(3, new Timestamp(time));
 			preparedStatement.execute();
-			this.plugin.getLogger().debug("Adding to the database : (identifier='" + this.identifier + "';"
+			this.plugin.getELogger().debug("Adding to the database : (identifier='" + this.identifier + "';"
 																	+ "command='" + command + "';"
 																	+ "time='" + time + "')");
 		} catch (SQLException e) {
-	    	this.plugin.getLogger().warn("Error during a change of account : (identifier:'" + this.identifier + "'): " + e.getMessage());
+	    	this.plugin.getELogger().warn("Error during a change of account : (identifier:'" + this.identifier + "'): " + e.getMessage());
 		} catch (ServerDisableException e) {
 			e.execute();
 		} finally {
@@ -299,11 +299,11 @@ public class ESubject implements CooldownsSubject {
 			preparedStatement.setString(2, this.identifier.toString());
 			preparedStatement.setString(3, command);
 			preparedStatement.execute();
-			this.plugin.getLogger().debug("Update database : (identifier='" + this.identifier + "';"
+			this.plugin.getELogger().debug("Update database : (identifier='" + this.identifier + "';"
 																	+ "command='" + command + "';"
 																	+ "time='" + time + "')");
 		} catch (SQLException e) {
-	    	this.plugin.getLogger().warn("Error during a change of account : (identifier:'" + this.identifier + "'): " + e.getMessage());
+	    	this.plugin.getELogger().warn("Error during a change of account : (identifier:'" + this.identifier + "'): " + e.getMessage());
 		} catch (ServerDisableException e) {
 			e.execute();
 		} finally {
@@ -327,10 +327,10 @@ public class ESubject implements CooldownsSubject {
 			preparedStatement.setString(1, this.identifier.toString());
 			preparedStatement.setString(2, command);
 			preparedStatement.execute();
-			this.plugin.getLogger().debug("Remove database : (identifier='" + this.identifier + "';"
+			this.plugin.getELogger().debug("Remove database : (identifier='" + this.identifier + "';"
 																	+ "command='" + command + "')");
 		} catch (SQLException e) {
-	    	this.plugin.getLogger().warn("Error during a change of account : (identifier:'" + this.identifier + "'): " + e.getMessage());
+	    	this.plugin.getELogger().warn("Error during a change of account : (identifier:'" + this.identifier + "'): " + e.getMessage());
 		} catch (ServerDisableException e) {
 			e.execute();
 		} finally {
@@ -352,9 +352,9 @@ public class ESubject implements CooldownsSubject {
 			preparedStatement = connection.prepareStatement(query);
 			preparedStatement.setString(1, this.identifier.toString());
 			preparedStatement.execute();
-			this.plugin.getLogger().debug("Remove database : (identifier='" + this.identifier + "')");
+			this.plugin.getELogger().debug("Remove database : (identifier='" + this.identifier + "')");
 		} catch (SQLException e) {
-	    	this.plugin.getLogger().warn("Error during a change of account : (identifier:'" + this.identifier + "'): " + e.getMessage());
+	    	this.plugin.getELogger().warn("Error during a change of account : (identifier:'" + this.identifier + "'): " + e.getMessage());
 		} catch (ServerDisableException e) {
 			e.execute();
 		} finally {

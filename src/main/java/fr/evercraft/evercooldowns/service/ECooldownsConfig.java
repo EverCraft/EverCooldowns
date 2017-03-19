@@ -100,11 +100,11 @@ public class ECooldownsConfig extends EConfig<EverCooldowns> {
 								if (value >= 0) {
 									cooldowns.put((String) cooldown.getKey(), value*1000);
 								} else {
-									this.plugin.getLogger().warn("The value of the cooldown is invalid : (group='" + group + "';permission='" + permission + "';value='" + value + "')");
+									this.plugin.getELogger().warn("The value of the cooldown is invalid : (group='" + group + "';permission='" + permission + "';value='" + value + "')");
 								}
 							}
 						} else {
-							this.plugin.getLogger().warn("The name of the permission is invalid : (group='" + group + "';permission='" + cooldown.getKey().toString() + "')");
+							this.plugin.getELogger().warn("The name of the permission is invalid : (group='" + group + "';permission='" + cooldown.getKey().toString() + "')");
 						}
 					}
 					
@@ -115,10 +115,10 @@ public class ECooldownsConfig extends EConfig<EverCooldowns> {
 							if (!commands.containsKey(name)) {
 								commands.put(name, value);
 							} else {
-								this.plugin.getLogger().warn("The name is already used : (group='" + group + "';name='" + name + "')");
+								this.plugin.getELogger().warn("The name is already used : (group='" + group + "';name='" + name + "')");
 							}
 						} else {
-							this.plugin.getLogger().warn("The command name is empty : (group='" + group + "')");
+							this.plugin.getELogger().warn("The command name is empty : (group='" + group + "')");
 						}
 					} else {
 						try {
@@ -127,14 +127,14 @@ public class ECooldownsConfig extends EConfig<EverCooldowns> {
 									if (!commands.containsKey(name)) {
 										commands.put(name, value);
 									} else {
-										this.plugin.getLogger().warn("The name is already used : (group='" + group + "';name='" + name + "')");
+										this.plugin.getELogger().warn("The name is already used : (group='" + group + "';name='" + name + "')");
 									}
 								} else {
-									this.plugin.getLogger().warn("The name of a command is empty : (group='" + group + "')");
+									this.plugin.getELogger().warn("The name of a command is empty : (group='" + group + "')");
 								}
 							}
 						} catch (ObjectMappingException e) {
-							this.plugin.getLogger().warn("Unable to read the list of commands : (group='" + group + "')");
+							this.plugin.getELogger().warn("Unable to read the list of commands : (group='" + group + "')");
 						}
 					}
 					
@@ -150,25 +150,25 @@ public class ECooldownsConfig extends EConfig<EverCooldowns> {
 								if (value >= 0) {
 									cooldowns.put((String) cooldown.getKey(), value*1000);
 								} else {
-									this.plugin.getLogger().warn("The value of the cooldown is invalid : (name='" + group + "';permission='" + permission + "';value='" + value + "')");
+									this.plugin.getELogger().warn("The value of the cooldown is invalid : (name='" + group + "';permission='" + permission + "';value='" + value + "')");
 								}
 							}
 						} else {
-							this.plugin.getLogger().warn("The name of the permission is invalid : (name='" + group + "';permission='" + cooldown.getKey().toString() + "')");
+							this.plugin.getELogger().warn("The name of the permission is invalid : (name='" + group + "';permission='" + cooldown.getKey().toString() + "')");
 						}
 					}
 					
 					if (!commands.containsKey(group)) {
 						commands.put(group, new EValue(command.getValue().getNode(CooldownsService.NAME_DEFAULT).getLong(0)*1000, UtilsMap.valueLinkedASC(cooldowns)));
 					} else {
-						this.plugin.getLogger().warn("The name is already used : (name='" + group + "')");
+						this.plugin.getELogger().warn("The name is already used : (name='" + group + "')");
 					}
 				}
 			} else {
-				this.plugin.getLogger().warn("The group name is invalid : (group='" + command.getKey().toString() + "')");
+				this.plugin.getELogger().warn("The group name is invalid : (group='" + command.getKey().toString() + "')");
 			}
 		}
-		this.plugin.getLogger().info("Loading " + commands.size() + " cooldown(s)");
+		this.plugin.getELogger().info("Loading " + commands.size() + " cooldown(s)");
 		return commands;
 	}
 }

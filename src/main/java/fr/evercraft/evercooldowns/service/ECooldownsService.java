@@ -67,7 +67,7 @@ public class ECooldownsService implements CooldownsService {
 					        	Chronometer chronometer = new Chronometer();
 					        	
 					        	ESubject subject = new ESubject(ECooldownsService.this.plugin, uuid);
-					        	ECooldownsService.this.plugin.getLogger().debug("Loading user '" + uuid.toString() + "' in " +  chronometer.getMilliseconds().toString() + " ms");
+					        	ECooldownsService.this.plugin.getELogger().debug("Loading user '" + uuid.toString() + "' in " +  chronometer.getMilliseconds().toString() + " ms");
 					            return subject;
 					        }
 					    });
@@ -137,7 +137,7 @@ public class ECooldownsService implements CooldownsService {
 	    	}
 	    	return Optional.ofNullable(this.subjects.get(uuid));
 		} catch (ExecutionException e) {
-			this.plugin.getLogger().warn("Error : Loading user (identifier='" + uuid + "';message='" + e.getMessage() + "')");
+			this.plugin.getELogger().warn("Error : Loading user (identifier='" + uuid + "';message='" + e.getMessage() + "')");
 			return Optional.empty();
 		}
 	}
@@ -163,13 +163,13 @@ public class ECooldownsService implements CooldownsService {
 		// Si le joueur est dans le cache
 		if (player != null) {
 			this.subjects.putIfAbsent(uuid, player);
-			this.plugin.getLogger().debug("Loading player cache : " + uuid.toString());
+			this.plugin.getELogger().debug("Loading player cache : " + uuid.toString());
 		// Si le joueur n'est pas dans le cache
 		} else {
 			Chronometer chronometer = new Chronometer();
 			player = new ESubject(this.plugin, uuid);
 			this.subjects.putIfAbsent(uuid, player);
-			this.plugin.getLogger().debug("Loading player '" + uuid.toString() + "' in " +  chronometer.getMilliseconds().toString() + " ms");
+			this.plugin.getELogger().debug("Loading player '" + uuid.toString() + "' in " +  chronometer.getMilliseconds().toString() + " ms");
 		}
 		//this.plugin.getManagerEvent().post(player, PermUserEvent.Action.USER_ADDED);
 	}
@@ -186,7 +186,7 @@ public class ECooldownsService implements CooldownsService {
 		if (player != null) {
 			this.cache.put(uuid, player);
 			//this.plugin.getManagerEvent().post(player, PermUserEvent.Action.USER_REMOVED);
-			this.plugin.getLogger().debug("Unloading the player : " + uuid.toString());
+			this.plugin.getELogger().debug("Unloading the player : " + uuid.toString());
 		}
 	}
 
