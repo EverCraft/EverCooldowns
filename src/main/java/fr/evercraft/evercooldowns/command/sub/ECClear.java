@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -50,7 +51,7 @@ public class ECClear extends ESubCommand<EverCooldowns> {
 		return ECMessages.CLEAR_DESCRIPTION.getText();
 	}
 	
-	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1 && source.hasPermission(ECPermissions.CLEAR_OTHERS.get())) {
 			return this.getAllPlayers(source, true);
 		}
@@ -70,13 +71,11 @@ public class ECClear extends ESubCommand<EverCooldowns> {
 				.build();
 	}
 	
-	public boolean subExecute(final CommandSource source, final List<String> args) {
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) {
 		if (args.size() == 0) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandClear((EPlayer) source);
+				return this.commandClear((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sendTo(source);
@@ -84,12 +83,12 @@ public class ECClear extends ESubCommand<EverCooldowns> {
 		} else if (args.size() == 1) {
 			if (source.hasPermission(ECPermissions.CLEAR_OTHERS.get())) {
 				if (args.get(0).equalsIgnoreCase("*") || args.get(0).equalsIgnoreCase("all")) {
-					resultat = this.commandClearAll(source);
+					return this.commandClearAll(source);
 				} else {
 					Optional<User> optUser = this.plugin.getEServer().getUser(args.get(0));
 					// Le joueur existe
 					if (optUser.isPresent()){
-						resultat = this.commandClear(source, optUser.get());
+						return this.commandClear(source, optUser.get());
 					// Le joueur est introuvable
 					} else {
 						EAMessages.PLAYER_NOT_FOUND.sender()
@@ -105,31 +104,31 @@ public class ECClear extends ESubCommand<EverCooldowns> {
 		} else {
 			source.sendMessage(this.help(source));
 		}
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 
-	private boolean commandClear(final EPlayer player) {
+	private CompletableFuture<Boolean> commandClear(final EPlayer player) {
 		if (player.clearCooldown()) {
 			ECMessages.CLEAR_EQUALS.sendTo(player);
 		} else {
 			ECMessages.CLEAR_ERROR_PLAYER.sendTo(player);
 		}
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandClearAll(final CommandSource player) {
+	private CompletableFuture<Boolean> commandClearAll(final CommandSource player) {
 		this.plugin.getDataBases().clearAll();
 		ECMessages.CLEAR_ALL.sendTo(player);
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandClear(final CommandSource staff, final User user) {
+	private CompletableFuture<Boolean> commandClear(final CommandSource staff, final User user) {
 		if (staff.getIdentifier().equals(user.getIdentifier()) && staff instanceof EPlayer) {
 			return this.commandClear((EPlayer) staff);
 		} else {
 			this.plugin.getThreadAsync().execute(() -> this.commandClearAsync(staff, user));
 		}
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	private void commandClearAsync(final CommandSource staff, final User user) {

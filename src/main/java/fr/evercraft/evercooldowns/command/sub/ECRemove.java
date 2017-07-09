@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -50,7 +51,7 @@ public class ECRemove extends ESubCommand<EverCooldowns> {
 		return ECMessages.REMOVE_DESCRIPTION.getText();
 	}
 	
-	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1) {
 			// TODO
 			return Arrays.asList("cooldown...");
@@ -73,13 +74,11 @@ public class ECRemove extends ESubCommand<EverCooldowns> {
 				.build();
 	}
 	
-	public boolean subExecute(final CommandSource source, final List<String> args) {
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) {
 		if (args.size() == 1) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandRemove((EPlayer) source, args.get(0));
+				return this.commandRemove((EPlayer) source, args.get(0));
 			// La source n'est pas un joueur
 			} else {
 				source.sendMessage(EAMessages.COMMAND_ERROR_FOR_PLAYER.getText());
@@ -88,7 +87,7 @@ public class ECRemove extends ESubCommand<EverCooldowns> {
 			Optional<User> optUser = this.plugin.getEServer().getUser(args.get(1));
 			// Le joueur existe
 			if (optUser.isPresent()){
-				resultat = this.commandRemove(source, optUser.get(), args.get(0));
+				return this.commandRemove(source, optUser.get(), args.get(0));
 			// Le joueur est introuvable
 			} else {
 				EAMessages.PLAYER_NOT_FOUND.sender()
@@ -98,10 +97,10 @@ public class ECRemove extends ESubCommand<EverCooldowns> {
 		} else {
 			source.sendMessage(this.help(source));
 		}
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 
-	private boolean commandRemove(final EPlayer player, final String cooldown) {
+	private CompletableFuture<Boolean> commandRemove(final EPlayer player, final String cooldown) {
 		if (player.removeCooldown(cooldown)) {
 			ECMessages.REMOVE_EQUALS.sender()
 				.replace("<cooldown>", cooldown)
@@ -111,16 +110,16 @@ public class ECRemove extends ESubCommand<EverCooldowns> {
 				.replace("<cooldown>", cooldown)
 				.sendTo(player);
 		}
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandRemove(final CommandSource staff, final User user, final String cooldown) {
+	private CompletableFuture<Boolean> commandRemove(final CommandSource staff, final User user, final String cooldown) {
 		if (staff.getIdentifier().equals(user.getIdentifier()) && staff instanceof EPlayer) {
 			return this.commandRemove((EPlayer) staff, cooldown);
 		} else {
 			this.plugin.getThreadAsync().execute(() -> this.commandRemoveAsync(staff, user, cooldown));
 		}
-		return true;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	private void commandRemoveAsync(final CommandSource staff, final User user, final String cooldown) {

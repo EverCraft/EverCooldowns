@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Map.Entry;
+import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandSource;
@@ -53,7 +54,7 @@ public class ECList extends ESubCommand<EverCooldowns> {
 		return ECMessages.LIST_DESCRIPTION.getText();
 	}
 	
-	public Collection<String> subTabCompleter(final CommandSource source, final List<String> args) throws CommandException {
+	public Collection<String> tabCompleter(final CommandSource source, final List<String> args) throws CommandException {
 		if (args.size() == 1 && source.hasPermission(ECPermissions.LIST_OTHERS.get())) {
 			return this.getAllPlayers(source, true);
 		}
@@ -73,13 +74,11 @@ public class ECList extends ESubCommand<EverCooldowns> {
 				.build();
 	}
 	
-	public boolean subExecute(final CommandSource source, final List<String> args) {
-		boolean resultat = false;
-		
+	public CompletableFuture<Boolean> execute(final CommandSource source, final List<String> args) {
 		if (args.size() == 0) {
 			// Si la source est un joueur
 			if (source instanceof EPlayer) {
-				resultat = this.commandList((EPlayer) source);
+				return this.commandList((EPlayer) source);
 			// La source n'est pas un joueur
 			} else {
 				EAMessages.COMMAND_ERROR_FOR_PLAYER.sendTo(source);
@@ -88,7 +87,7 @@ public class ECList extends ESubCommand<EverCooldowns> {
 			Optional<User> optUser = this.plugin.getEServer().getUser(args.get(0));
 			// Le joueur existe
 			if (optUser.isPresent()){
-				resultat = this.commandList(source, optUser.get());
+				return this.commandList(source, optUser.get());
 			// Le joueur est introuvable
 			} else {
 				EAMessages.PLAYER_NOT_FOUND.sender()
@@ -98,10 +97,10 @@ public class ECList extends ESubCommand<EverCooldowns> {
 		} else {
 			source.sendMessage(this.help(source));
 		}
-		return resultat;
+		return CompletableFuture.completedFuture(false);
 	}
 
-	private boolean commandList(final EPlayer player) {
+	private CompletableFuture<Boolean> commandList(final EPlayer player) {
 		Map<String, Long> cooldowns = player.getCooldowns();
 		if (!cooldowns.isEmpty()) {
 			List<Text> lists = new ArrayList<Text>();
@@ -124,16 +123,16 @@ public class ECList extends ESubCommand<EverCooldowns> {
 		} else {
 			ECMessages.LIST_PLAYER_EMPTY.sendTo(player);
 		}
-		return false;
+		return CompletableFuture.completedFuture(true);
 	}
 	
-	private boolean commandList(final CommandSource staff, final User user) {
+	private CompletableFuture<Boolean> commandList(final CommandSource staff, final User user) {
 		if (staff.getIdentifier().equals(user.getIdentifier()) && staff instanceof EPlayer) {
 			return this.commandList((EPlayer) staff);
 		} else {
 			this.plugin.getThreadAsync().execute(() -> this.commandListAsync(staff, user));
 		}
-		return false;
+		return CompletableFuture.completedFuture(true);
 	}
 	
 	private void commandListAsync(final CommandSource staff, final User user) {
