@@ -93,6 +93,7 @@ public class ECClear extends ESubCommand<EverCooldowns> {
 					} else {
 						EAMessages.PLAYER_NOT_FOUND.sender()
 							.prefix(ECMessages.PREFIX)
+							.replace("<player>", args.get(0))
 							.sendTo(source);
 					}
 				}
@@ -155,7 +156,6 @@ public class ECClear extends ESubCommand<EverCooldowns> {
 		} else {
 			EAMessages.PLAYER_NOT_FOUND.sender()
 				.prefix(ECMessages.PREFIX)
-				.replace("<staff>", staff.getName())
 				.replace("<player>", user.getName())
 				.sendTo(staff);
 		}

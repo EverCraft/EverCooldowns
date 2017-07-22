@@ -92,6 +92,7 @@ public class ECRemove extends ESubCommand<EverCooldowns> {
 			} else {
 				EAMessages.PLAYER_NOT_FOUND.sender()
 					.prefix(ECMessages.PREFIX)
+					.replace("<player>", args.get(1))
 					.sendTo(source);
 			}
 		} else {
@@ -147,6 +148,7 @@ public class ECRemove extends ESubCommand<EverCooldowns> {
 		} else {
 			EAMessages.PLAYER_NOT_FOUND.sender()
 				.prefix(ECMessages.PREFIX)
+				.replace("<player>", user.getName())
 				.sendTo(staff);
 		}
 	}

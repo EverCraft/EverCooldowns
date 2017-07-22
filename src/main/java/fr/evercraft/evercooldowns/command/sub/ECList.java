@@ -92,6 +92,7 @@ public class ECList extends ESubCommand<EverCooldowns> {
 			} else {
 				EAMessages.PLAYER_NOT_FOUND.sender()
 					.prefix(ECMessages.PREFIX)
+					.replace("<player>", args.get(0))
 					.sendTo(source);
 			}
 		} else {
