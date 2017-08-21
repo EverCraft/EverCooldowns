@@ -34,7 +34,7 @@ public class ECDataBase extends EDataBase<EverCooldowns> {
 	public boolean init() throws ServerDisableException {
 		this.table_player = "player";
 
-		String player = "CREATE TABLE IF NOT EXISTS <table> (" + 
+		String player = "CREATE TABLE IF NOT EXISTS {table} (" + 
 						"`uuid` varchar(36) NOT NULL," + 
 						"`command` varchar(32) NOT NULL," + 
 						"`time` timestamp NOT NULL," + 
