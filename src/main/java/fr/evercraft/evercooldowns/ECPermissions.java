@@ -23,19 +23,18 @@ import com.google.common.base.Preconditions;
 import fr.evercraft.everapi.plugin.EnumPermission;
 
 public enum ECPermissions implements EnumPermission {
-	EVERCOOLDOWNS("command"),
+	EVERCOOLDOWNS("commands.execute"),
+	HELP("commands.help"),
+	RELOAD("commands.reload"),
 	
-	HELP("help"),
-	RELOAD("reload"),
+	LIST("commands.list.execute"),
+	LIST_OTHERS("commands.list.others"),
 	
-	LIST("list.command"),
-	LIST_OTHERS("list.others"),
+	CLEAR("commands.clear.execute"),
+	CLEAR_OTHERS("commands.clear.others"),
 	
-	CLEAR("clear.command"),
-	CLEAR_OTHERS("clear.others"),
-	
-	REMOVE("remove.command"),
-	REMOVE_OTHERS("remove.others"),
+	REMOVE("commands.remove.execute"),
+	REMOVE_OTHERS("commands.remove.others"),
 	
 	COOLDOWN("cooldown"),
 	BYPASS("bypass");
