@@ -21,6 +21,7 @@ import org.spongepowered.api.plugin.Plugin;
 
 import fr.evercraft.everapi.EverAPI;
 import fr.evercraft.everapi.exception.PluginDisableException;
+import fr.evercraft.everapi.exception.ServerDisableException;
 import fr.evercraft.everapi.plugin.EPlugin;
 import fr.evercraft.everapi.services.cooldown.CooldownsService;
 import fr.evercraft.evercooldowns.command.sub.ECClear;
@@ -68,11 +69,11 @@ public class EverCooldowns extends EPlugin<EverCooldowns> {
 		command.add(new ECClear(this, command));
 	}
 
-	protected void onReload() throws PluginDisableException{
-		this.reloadConfigurations();
+	@Override
+	protected void onReload() throws PluginDisableException, ServerDisableException {
+		super.onReload();
 		
 		this.databases.reload();
-		
 		this.service.reload();
 	}
 	
