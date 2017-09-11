@@ -93,7 +93,7 @@ public class ECClear extends ESubCommand<EverCooldowns> {
 					} else {
 						EAMessages.PLAYER_NOT_FOUND.sender()
 							.prefix(ECMessages.PREFIX)
-							.replace("<player>", args.get(0))
+							.replace("{player}", args.get(0))
 							.sendTo(source);
 					}
 				}
@@ -138,25 +138,25 @@ public class ECClear extends ESubCommand<EverCooldowns> {
 			CooldownsSubject subject = optSubject.get();
 			if (subject.clear()) {
 				ECMessages.CLEAR_STAFF.sender()
-					.replace("<staff>", staff.getName())
-					.replace("<player>", user.getName())
+					.replace("{staff}", staff.getName())
+					.replace("{player}", user.getName())
 					.sendTo(staff);
 				user.getPlayer().ifPresent(player ->
 					ECMessages.CLEAR_PLAYER.sender()
-						.replace("<staff>", staff.getName())
-						.replace("<player>", user.getName())
+						.replace("{staff}", staff.getName())
+						.replace("{player}", user.getName())
 						.sendTo(player)
 				);
 			} else {
 				ECMessages.CLEAR_ERROR_STAFF.sender()
-					.replace("<staff>", staff.getName())
-					.replace("<player>", user.getName())
+					.replace("{staff}", staff.getName())
+					.replace("{player}", user.getName())
 					.sendTo(staff);
 			}
 		} else {
 			EAMessages.PLAYER_NOT_FOUND.sender()
 				.prefix(ECMessages.PREFIX)
-				.replace("<player>", user.getName())
+				.replace("{player}", user.getName())
 				.sendTo(staff);
 		}
 	}

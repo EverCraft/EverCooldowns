@@ -24,9 +24,6 @@ import fr.evercraft.evercooldowns.ECMessage.ECMessages;
 
 public class ECCommand extends EParentCommand<EverCooldowns> {
 	
-	
-	
-	
 	public ECCommand(final EverCooldowns plugin) {
         super(plugin, "evercooldowns", "cooldowns");
     }

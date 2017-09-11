@@ -33,37 +33,37 @@ public class ECMessage extends EMessage<EverCooldowns> {
 	public enum ECMessages implements EnumMessage {
 		PREFIX("PREFIX", 									"[&4Ever&6&lCooldowns&f] "),
 		DESCRIPTION("description", 							"Gestion des cooldowns"),
-		COOLDOWN("cooldown", 								"&cVous ne pouvez pas effectuer cette action avant : <time>"),
+		COOLDOWN("cooldown", 								"&cVous ne pouvez pas effectuer cette action avant : {time}"),
 		
 		// Clear
 		CLEAR_DESCRIPTION("clearDescription", 				"Supprime tous les cooldowns d'un joueur"),
-		CLEAR_STAFF("clearStaff", 							"&7Tous les cooldowns de &6<player> &7ont bien été supprimés."),
-		CLEAR_PLAYER("clearPlayer", 						"&7Tous vos cooldowns ont été supprimés par &6<staff>&7."),
+		CLEAR_STAFF("clearStaff", 							"&7Tous les cooldowns de &6{player} &7ont bien été supprimés."),
+		CLEAR_PLAYER("clearPlayer", 						"&7Tous vos cooldowns ont été supprimés par &6{staff}&7."),
 		CLEAR_EQUALS("clearEquals", 						"&7Tous vos cooldowns ont bien été supprimés."),
 		CLEAR_ALL("clearAll", 								"&7Tous les cooldowns ont bien été supprimés."),
-		CLEAR_ERROR_STAFF("clearErrorStaff", 				"&6<player> &cn'a aucun cooldown."),
+		CLEAR_ERROR_STAFF("clearErrorStaff", 				"&6{player} &cn'a aucun cooldown."),
 		CLEAR_ERROR_PLAYER("clearErrorEquals", 				"&cVous n'avez aucun cooldown."),
 		
 		// List
 		LIST_DESCRIPTION("listDescription", 				"Affiche la liste des cooldowns d'un joueur"),
 		LIST_PLAYER_TITLE("listPlayerTitle", 				"&aLa liste de vos cooldowns"),
-		LIST_PLAYER_LINE("listPlayerLine", 					"    &6&l➤  &6<cooldown> : &a<time> <delete>"),
+		LIST_PLAYER_LINE("listPlayerLine", 					"    &6&l➤  &6{cooldown} : &a{time} {delete}"),
 		LIST_PLAYER_EMPTY("listPlayerEmpty", 				"&7Vous n'avez aucun cooldown."),
 		LIST_PLAYER_DELETE("listPlayerDelete", 				"&c&nSupprimer"),
-		LIST_PLAYER_DELETE_HOVER("listPlayerDeleteHover", 	"&cCliquez ici pour supprimer le cooldown &6<cooldown>&c."),
+		LIST_PLAYER_DELETE_HOVER("listPlayerDeleteHover", 	"&cCliquez ici pour supprimer le cooldown &6{cooldown}&c."),
 		LIST_STAFF_TITLE("listStaffTitle", 					"&aLa liste des cooldowns de &6<player"),
-		LIST_STAFF_LINE("listStaffLine", 					"    &6&l➤  &6<cooldown> : &a<time> <delete>"),
-		LIST_STAFF_EMPTY("listStaffEmpty", 					"&6<player> &7n'a aucun cooldown."),
+		LIST_STAFF_LINE("listStaffLine", 					"    &6&l➤  &6{cooldown} : &a{time} {delete}"),
+		LIST_STAFF_EMPTY("listStaffEmpty", 					"&6{player} &7n'a aucun cooldown."),
 		LIST_STAFF_DELETE("listStaffDelete", 				"&c&nSupprimer"),
-		LIST_STAFF_DELETE_HOVER("listStaffDeleteHover", 	"&cCliquez ici pour supprimer le cooldown &6<cooldown>&c."),
+		LIST_STAFF_DELETE_HOVER("listStaffDeleteHover", 	"&cCliquez ici pour supprimer le cooldown &6{cooldown}&c."),
 		
 		// Remove
 		REMOVE_DESCRIPTION("removeDescription", 			"Supprime un cooldown d'un joueur"),
-		REMOVE_STAFF("removeStaff", 						"&7Le cooldown &6<cooldown> &7de &6<player> &7a bien été supprimé."),
-		REMOVE_PLAYER("removePlayer",						"&7Votre cooldown &6<cooldown> &7a été supprimé par &6<staff>&7."),
-		REMOVE_EQUALS("removeEquals", 						"&7Votre cooldown &6<cooldown> &7a bien été supprimé."),
-		REMOVE_ERROR_STAFF("removeErrorStaff", 				"&6<player> &cn'a pas cooldown &6<cooldown>&7."),
-		REMOVE_ERROR_PLAYER("removeErrorEquals", 			"&cVous n'avez pas cooldown &6<cooldown>&7.");
+		REMOVE_STAFF("removeStaff", 						"&7Le cooldown &6{cooldown} &7de &6{player} &7a bien été supprimé."),
+		REMOVE_PLAYER("removePlayer",						"&7Votre cooldown &6{cooldown} &7a été supprimé par &6{staff}&7."),
+		REMOVE_EQUALS("removeEquals", 						"&7Votre cooldown &6{cooldown} &7a bien été supprimé."),
+		REMOVE_ERROR_STAFF("removeErrorStaff", 				"&6{player} &cn'a pas cooldown &6{cooldown}&7."),
+		REMOVE_ERROR_PLAYER("removeErrorEquals", 			"&cVous n'avez pas cooldown &6{cooldown}&7.");
 		
 		private final String path;
 	    private final EMessageBuilder french;

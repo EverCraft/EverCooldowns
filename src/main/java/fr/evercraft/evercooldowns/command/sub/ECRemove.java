@@ -92,7 +92,7 @@ public class ECRemove extends ESubCommand<EverCooldowns> {
 			} else {
 				EAMessages.PLAYER_NOT_FOUND.sender()
 					.prefix(ECMessages.PREFIX)
-					.replace("<player>", args.get(1))
+					.replace("{player}", args.get(1))
 					.sendTo(source);
 			}
 		} else {
@@ -104,11 +104,11 @@ public class ECRemove extends ESubCommand<EverCooldowns> {
 	private CompletableFuture<Boolean> commandRemove(final EPlayer player, final String cooldown) {
 		if (player.removeCooldown(cooldown)) {
 			ECMessages.REMOVE_EQUALS.sender()
-				.replace("<cooldown>", cooldown)
+				.replace("{cooldown}", cooldown)
 				.sendTo(player);
 		} else {
 			ECMessages.REMOVE_ERROR_PLAYER.sender()
-				.replace("<cooldown>", cooldown)
+				.replace("{cooldown}", cooldown)
 				.sendTo(player);
 		}
 		return CompletableFuture.completedFuture(true);
@@ -129,26 +129,26 @@ public class ECRemove extends ESubCommand<EverCooldowns> {
 			CooldownsSubject subject = optSubject.get();
 			if (subject.remove(cooldown)) {
 				ECMessages.REMOVE_ERROR_PLAYER.sender()
-					.replace("<staff>", staff.getName())
-					.replace("<player>", user.getName())
-					.replace("<cooldown>", cooldown)
+					.replace("{staff}", staff.getName())
+					.replace("{player}", user.getName())
+					.replace("{cooldown}", cooldown)
 					.sendTo(staff);
 				user.getPlayer().ifPresent(player -> ECMessages.REMOVE_PLAYER.sender()
-						.replace("<staff>", staff.getName())
-						.replace("<player>", user.getName())
-						.replace("<cooldown>", cooldown)
+						.replace("{staff}", staff.getName())
+						.replace("{player}", user.getName())
+						.replace("{cooldown}", cooldown)
 						.sendTo(player));
 			} else {
 				ECMessages.REMOVE_ERROR_STAFF.sender()
-					.replace("<staff>", staff.getName())
-					.replace("<player>", user.getName())
-					.replace("<cooldown>", cooldown)
+					.replace("{staff}", staff.getName())
+					.replace("{player}", user.getName())
+					.replace("{cooldown}", cooldown)
 					.sendTo(staff);
 			}
 		} else {
 			EAMessages.PLAYER_NOT_FOUND.sender()
 				.prefix(ECMessages.PREFIX)
-				.replace("<player>", user.getName())
+				.replace("{player}", user.getName())
 				.sendTo(staff);
 		}
 	}

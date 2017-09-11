@@ -92,7 +92,7 @@ public class ECList extends ESubCommand<EverCooldowns> {
 			} else {
 				EAMessages.PLAYER_NOT_FOUND.sender()
 					.prefix(ECMessages.PREFIX)
-					.replace("<player>", args.get(0))
+					.replace("{player}", args.get(0))
 					.sendTo(source);
 			}
 		} else {
@@ -108,15 +108,15 @@ public class ECList extends ESubCommand<EverCooldowns> {
 			if (player.hasPermission(ECPermissions.REMOVE.get())) {
 				for (Entry<String, Long> cooldown : cooldowns.entrySet()) {
 					lists.add(ECMessages.LIST_PLAYER_LINE.getFormat()
-							.toText("<cooldown>", () -> cooldown.getKey(), 
-									"<time>", () -> this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(cooldown.getValue()),
-									"<delete>", () -> this.getButtonDelete(player, cooldown.getKey())));
+							.toText("{cooldown}", () -> cooldown.getKey(), 
+									"{time}", () -> this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(cooldown.getValue()),
+									"{delete}", () -> this.getButtonDelete(player, cooldown.getKey())));
 				}
 			} else {
 				for (Entry<String, Long> cooldown : cooldowns.entrySet()) {
 					lists.add(ECMessages.LIST_PLAYER_LINE.getFormat()
-							.toText("<cooldown>", () -> cooldown.getKey(),
-									"<time>", () -> this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(cooldown.getValue())));
+							.toText("{cooldown}", () -> cooldown.getKey(),
+									"{time}", () -> this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(cooldown.getValue())));
 				}
 			}
 			this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(ECMessages.LIST_PLAYER_TITLE.getText().toBuilder()
@@ -146,23 +146,23 @@ public class ECList extends ESubCommand<EverCooldowns> {
 				if (staff.hasPermission(ECPermissions.REMOVE.get()) && staff.hasPermission(ECPermissions.REMOVE_OTHERS.get())) {
 					for (Entry<String, Long> cooldown : cooldowns.entrySet()) {
 						lists.add(ECMessages.LIST_STAFF_LINE.getFormat()
-								.toText("<cooldown>", () -> cooldown.getKey(),
-										"<time>", () -> this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(cooldown.getValue()),
-										"<delete>", () -> this.getButtonDeleteOthers(user, cooldown.getKey())));
+								.toText("{cooldown}", () -> cooldown.getKey(),
+										"{time}", () -> this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(cooldown.getValue()),
+										"{delete}", () -> this.getButtonDeleteOthers(user, cooldown.getKey())));
 					}
 				} else {
 					for (Entry<String, Long> cooldown : cooldowns.entrySet()) {
 						lists.add(ECMessages.LIST_STAFF_LINE.getFormat()
-								.toText("<cooldown>", () -> cooldown.getKey(),
-										"<time>", () -> this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(cooldown.getValue())));
+								.toText("{cooldown}", () -> cooldown.getKey(),
+										"{time}", () -> this.plugin.getEverAPI().getManagerUtils().getDate().formatDate(cooldown.getValue())));
 					}
 				}
 				this.plugin.getEverAPI().getManagerService().getEPagination().sendTo(ECMessages.LIST_STAFF_TITLE.getText().toBuilder()
 						.onClick(TextActions.runCommand(this.getName())).build(), lists, staff);
 			} else {
 				ECMessages.LIST_STAFF_EMPTY.sender()
-					.replace("<staff>", staff.getName())
-					.replace("<player>", user.getName())
+					.replace("{staff}", staff.getName())
+					.replace("{player}", user.getName())
 					.sendTo(staff);
 			}
 		} else {
@@ -175,8 +175,8 @@ public class ECList extends ESubCommand<EverCooldowns> {
 	public Text getButtonDelete(final EPlayer player, final String cooldown){
 		return ECMessages.LIST_PLAYER_DELETE.getText().toBuilder()
 					.onHover(TextActions.showText(ECMessages.LIST_PLAYER_DELETE_HOVER.getFormat()
-							.toText("<player>", player.getName(),
-									"<cooldown>", cooldown)))
+							.toText("{player}", player.getName(),
+									"{cooldown}", cooldown)))
 					.onClick(TextActions.runCommand("/" + this.getParentName() + " remove " + cooldown))
 					.build();
 	}
@@ -184,8 +184,8 @@ public class ECList extends ESubCommand<EverCooldowns> {
 	public Text getButtonDeleteOthers(final User player, final String cooldown){
 		return ECMessages.LIST_STAFF_DELETE.getText().toBuilder()
 					.onHover(TextActions.showText(ECMessages.LIST_STAFF_DELETE_HOVER.getFormat()
-							.toText("<player>", player.getName(),
-									"<cooldown>", cooldown)))
+							.toText("{player}", player.getName(),
+									"{cooldown}", cooldown)))
 					.onClick(TextActions.runCommand("/" + this.getParentName() + " remove " + cooldown + " " + player.getName()))
 					.build();
 	}
