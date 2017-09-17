@@ -63,7 +63,19 @@ public class ECMessage extends EMessage<EverCooldowns> {
 		REMOVE_PLAYER("removePlayer",						"&7Votre cooldown &6{cooldown} &7a été supprimé par &6{staff}&7."),
 		REMOVE_EQUALS("removeEquals", 						"&7Votre cooldown &6{cooldown} &7a bien été supprimé."),
 		REMOVE_ERROR_STAFF("removeErrorStaff", 				"&6{player} &cn'a pas cooldown &6{cooldown}&7."),
-		REMOVE_ERROR_PLAYER("removeErrorEquals", 			"&cVous n'avez pas cooldown &6{cooldown}&7.");
+		REMOVE_ERROR_PLAYER("removeErrorEquals", 			"&cVous n'avez pas cooldown &6{cooldown}&7."),
+		
+		PERMISSIONS_COMMANDS_EXECUTE("permissionsCommandsExecute", ""),
+		PERMISSIONS_COMMANDS_HELP("permissionsCommandsHelp", ""),
+		PERMISSIONS_COMMANDS_RELOAD("permissionsCommandsReload", ""),
+		PERMISSIONS_COMMANDS_LIST_EXECUTE("permissionsCommandsListExecute", ""),
+		PERMISSIONS_COMMANDS_LIST_OTHERS("permissionsCommandsListOthers", ""),
+		PERMISSIONS_COMMANDS_CLEAR_EXECUTE("permissionsCommandsClearExecute", ""),
+		PERMISSIONS_COMMANDS_CLEAR_OTHERS("permissionsCommandsClearOthers", ""),
+		PERMISSIONS_COMMANDS_REMOVE_EXECUTE("permissionsCommandsRemoveExecute", ""),
+		PERMISSIONS_COMMANDS_REMOVE_OTHERS("permissionsCommandsRemoveOthers", ""),
+		PERMISSIONS_COOLDOWN("permissionsCooldown", ""),
+		PERMISSIONS_BYPASS("permissionsBypass", "");
 		
 		private final String path;
 	    private final EMessageBuilder french;

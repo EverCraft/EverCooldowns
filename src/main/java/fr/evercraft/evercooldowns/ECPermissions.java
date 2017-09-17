@@ -16,44 +16,55 @@
  */
 package fr.evercraft.evercooldowns;
 
-import org.spongepowered.api.command.CommandSource;
-
-import com.google.common.base.Preconditions;
-
 import fr.evercraft.everapi.plugin.EnumPermission;
+import fr.evercraft.everapi.plugin.file.EnumMessage;
+import fr.evercraft.evercooldowns.ECMessage.ECMessages;
 
 public enum ECPermissions implements EnumPermission {
-	EVERCOOLDOWNS("commands.execute"),
-	HELP("commands.help"),
-	RELOAD("commands.reload"),
+	EVERCOOLDOWNS("commands.execute", ECMessages.PERMISSIONS_COMMANDS_EXECUTE),
+	HELP("commands.help", ECMessages.PERMISSIONS_COMMANDS_HELP),
+	RELOAD("commands.reload", ECMessages.PERMISSIONS_COMMANDS_RELOAD),
 	
-	LIST("commands.list.execute"),
-	LIST_OTHERS("commands.list.others"),
+	LIST("commands.list.execute", ECMessages.PERMISSIONS_COMMANDS_LIST_EXECUTE),
+	LIST_OTHERS("commands.list.others", ECMessages.PERMISSIONS_COMMANDS_LIST_OTHERS),
 	
-	CLEAR("commands.clear.execute"),
-	CLEAR_OTHERS("commands.clear.others"),
+	CLEAR("commands.clear.execute", ECMessages.PERMISSIONS_COMMANDS_CLEAR_EXECUTE),
+	CLEAR_OTHERS("commands.clear.others", ECMessages.PERMISSIONS_COMMANDS_CLEAR_OTHERS),
 	
-	REMOVE("commands.remove.execute"),
-	REMOVE_OTHERS("commands.remove.others"),
+	REMOVE("commands.remove.execute", ECMessages.PERMISSIONS_COMMANDS_REMOVE_EXECUTE),
+	REMOVE_OTHERS("commands.remove.others", ECMessages.PERMISSIONS_COMMANDS_REMOVE_OTHERS),
 	
-	COOLDOWN("cooldown"),
-	BYPASS("bypass");
+	COOLDOWN("cooldown", ECMessages.PERMISSIONS_COOLDOWN),
+	BYPASS("bypass", ECMessages.PERMISSIONS_BYPASS);
 
-	private final static String prefix = "evercooldowns";
+	private static final String PREFIX = "evercooldowns";
 	
 	private final String permission;
+	private final EnumMessage message;
+	private final boolean value;
     
-    private ECPermissions(final String permission) {   	
-    	Preconditions.checkNotNull(permission, "La permission '" + this.name() + "' n'est pas définit");
-    	
-    	this.permission = permission;
+	private ECPermissions(final String permission, final EnumMessage message) {
+    	this(permission, message, false);
+    }
+    
+    private ECPermissions(final String permission, final EnumMessage message, final boolean value) {   	    	
+    	this.permission = PREFIX + "." + permission;
+    	this.message = message;
+    	this.value = value;
     }
 
+    @Override
     public String get() {
-		return ECPermissions.prefix + "." + this.permission;
+    	return this.permission;
 	}
-    
-    public boolean has(CommandSource player) {
-    	return player.hasPermission(this.get());
-    }
+
+	@Override
+	public boolean getDefault() {
+		return this.value;
+	}
+
+	@Override
+	public EnumMessage getMessage() {
+		return this.message;
+	}
 }
