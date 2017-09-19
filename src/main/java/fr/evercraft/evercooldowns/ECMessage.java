@@ -134,4 +134,9 @@ public class ECMessage extends EMessage<EverCooldowns> {
 			this.builder = message;
 		}
 	}
+	
+	@Override
+	public EnumMessage getPrefix() {
+		return ECMessages.PREFIX;
+	}
 }
