@@ -91,6 +91,10 @@ public class EverCooldowns extends EPlugin<EverCooldowns> {
 	public ECConfig getConfigs() {
 		return this.configs;
 	}
+	
+	public ECPermissions[] getPermissions() {
+		return ECPermissions.values();
+	}
 
 	public ECDataBase getDataBases() {
 		return this.databases;
